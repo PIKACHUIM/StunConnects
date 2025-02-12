@@ -17,7 +17,7 @@ class Task(ft.Column):
         self.map_name = ft.Checkbox(
             width=100, value=False,
             label=map_name,
-            on_change=self.status_changed
+            on_change=self.status_chang
         )
 
         self.url_text = ft.TextField(
@@ -62,13 +62,13 @@ class Task(ft.Column):
                     ft.IconButton(
                         ft.icons.DELETE_ROUNDED,
                         tooltip="Delete To-Do",
-                        on_click=self.delete_clicked,
+                        on_click=self.delete_click,
                         disabled=True,
                     ),
                     ft.IconButton(
                         ft.icons.EDIT_ROUNDED,
                         tooltip="Delete To-Do",
-                        on_click=self.delete_clicked,
+                        on_click=self.delete_click,
                         disabled=True,
                     ),
 
@@ -86,9 +86,14 @@ class Task(ft.Column):
         # self.display_view.visible = True
         self.update()
 
-    def status_changed(self, e):
+    # 按钮 ####################################################################
+
+
+
+    #
+    def status_chang(self, e):
         self.completed = self.map_name.value
         self.on_change(self)
 
-    def delete_clicked(self, e):
+    def delete_click(self, e):
         self.on_delete(self)
