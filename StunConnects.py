@@ -7,27 +7,50 @@ class StunConnects(ft.Column):
     # 软件UI ############################################################################
     def __init__(self):
         super().__init__()
-        # 全局设置 ===================================
-        self.width = 700  # 宽度
+        # 全局设置 =======================================
+        self.dialog = None
+        self.width = 640  # 宽度
         self.tasks = ft.Column()  # 任务列表
 
-        # 新增组件 ===================================
-        # 跳转链接 -----------------------------------
+        # 新增组件 =======================================
+        # 跳转链接 ---------------------------------------
         self.map_name = ft.TextField(
             hint_text="备注名称",
             on_submit=self.add_clicked,
             width=100,
             label="备注名称",
         )
-
-        # 跳转链接 -----------------------------------
+        self.dlg_name = ft.AlertDialog(
+            title=ft.Text("错误"),
+            content=ft.Text("请输入备注名称"),
+            actions=[
+                ft.TextButton(
+                    "OK",
+                    on_click=lambda e: self.page.close(
+                        self.dlg_name))
+            ],
+        )
+        # 跳转链接 ---------------------------------------
         self.url_text = ft.TextField(
             hint_text="https://1web.us.kg/p/XXXXXXXX",
             on_submit=self.add_clicked,
             expand=True,
             label="跳转链接",
         )
-        # 本地端口 -----------------------------------
+        self.dlg_addr = ft.AlertDialog(
+            title=ft.Text("错误"),
+            content=ft.Text(
+                "请正确填写短链接地址:\n"
+                "  例如：https://1web.us.kg/p/ABCDEFGH\n"
+                "  或者：https://1web.us.kg/s/ABCDEFGH\n"),
+            actions=[
+                ft.TextButton(
+                    "OK",
+                    on_click=lambda e: self.page.close(
+                        self.dlg_addr))
+            ],
+        )
+        # 本地端口 ---------------------------------------
         self.map_port = ft.TextField(
             width=100,
             hint_text="3000",
@@ -35,7 +58,7 @@ class StunConnects(ft.Column):
             on_submit=self.add_clicked,
         )
 
-        # 映射类型 -----------------------------------
+        # 映射类型 ---------------------------------------
         self.map_type = ft.Dropdown(
             width=80,
             label="映射类型",
@@ -46,7 +69,7 @@ class StunConnects(ft.Column):
         )
         self.map_type.value = "TCP"
 
-        # 过滤器 -------------------------------------
+        # 过滤器 -----------------------------------------
         self.filter = ft.Tabs(
             scrollable=False,
             selected_index=0,
@@ -55,7 +78,7 @@ class StunConnects(ft.Column):
                   ft.Tab(text="正在映射"),
                   ft.Tab(text="停止映射")],
         )
-        # 底部 ---------------------------------------
+        # 底部 -------------------------------------------
         self.items_left = ft.Text("0 个已映射端口")
 
         self.controls = [
@@ -106,6 +129,14 @@ class StunConnects(ft.Column):
         pass
 
     def add_clicked(self, e):
+        if not self.map_name.value:
+            self.page.open(self.dlg_name)
+            return None
+        if not self.url_text.value \
+                or (self.url_text.value.find("http://") < 0
+                    and self.url_text.value.find("https://") < 0):
+            self.page.open(self.dlg_addr)
+            return None
         if not self.map_port.value:
             self.map_port.value = random.randint(10000, 59999)
         if not self.map_type.value:
@@ -123,7 +154,6 @@ class StunConnects(ft.Column):
             self.url_text.value = ""
             self.url_text.focus()
             self.update()
-
 
     def task_status_change(self, task):
         self.update()
