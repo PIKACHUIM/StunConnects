@@ -188,7 +188,6 @@ def main(page: ft.Page):
     page.title = "STUN 映射助手"
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
     page.scroll = ft.ScrollMode.ADAPTIVE
-
     # create app control and add it to the page
     page.add(StunConnects())
 
