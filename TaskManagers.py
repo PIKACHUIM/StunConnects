@@ -83,7 +83,7 @@ class Task(ft.Column):
 
     def save_clicked(self, e):
         # self.map_name.label = self.edit_name.value
-        self.display_view.visible = True
+        # self.display_view.visible = True
         self.update()
 
     def status_changed(self, e):
