@@ -1,7 +1,6 @@
 import random
-
 import flet as ft
-from TaskManagers import Task
+from portForwards.TaskManagers import Task
 
 
 class StunConnects(ft.Column):
