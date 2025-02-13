@@ -1,0 +1,24 @@
+[project]
+name = "StunConnects"
+version = "0.1 Beta"
+description = "STUN 映射助手"
+readme = "README.md"
+requires-python = ">=3.9"
+authors = [
+    { name = "Pikachu Ren", email = "pikachuim@foxmail.com" }
+]
+dependencies = [
+    "flet",
+    "requests",
+    "pyperclip"
+]
+
+[tool.flet]
+app.module = "StunConnects"
+org = "com.pika.stunconnects"
+product = "Stun Connect"
+company = "Pikachu Ren"
+copyright = "Copyright (C) 2025 by Pikachu Ren"
+
+#[tool.flet.app]
+#path = "src"
