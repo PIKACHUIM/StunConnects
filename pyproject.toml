@@ -19,6 +19,3 @@ org = "com.pika.stunconnects"
 product = "Stun Connect"
 company = "Pikachu Ren"
 copyright = "Copyright (C) 2025 by Pikachu Ren"
-
-#[tool.flet.app]
-#path = "src"

@@ -1,7 +1,9 @@
 import random
+import sys
+
 import flet as ft
 import webbrowser
-
+import multiprocessing
 from portForwards.TaskManagers import Task
 
 
@@ -244,4 +246,8 @@ def main(page: ft.Page):
 
 
 if __name__ == "__main__":
+    multiprocessing.freeze_support()
     ft.app(main)
+    # print(sys.orig_argv, sys.argv)
+    # if len(sys.argv) <=1:
+    #     ft.app(main)

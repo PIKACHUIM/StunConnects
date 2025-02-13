@@ -1,6 +1,5 @@
 import flet as ft
 import pyperclip
-
 from portForwards.AllForwarder import PortForwards
 
 

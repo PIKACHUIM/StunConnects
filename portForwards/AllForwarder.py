@@ -1,10 +1,12 @@
 import asyncio
+import time
+
 import requests
 import multiprocessing
-
+import threading
 from portForwards.UdpForwarder import UdpForwarder
 
-
+# class PortForwards(threading.Thread):
 class PortForwards(multiprocessing.Process):
     def __init__(self,
 
@@ -22,10 +24,25 @@ class PortForwards(multiprocessing.Process):
         self.proxy_type = str(proxy_type)
         self.proxy_urls = proxy_urls
         self.server_api = None
+        self.loop = None  # 用于保存 asyncio 的事件循环
+        self.flag = True  # 用于停止线程
 
     def run(self):
         self.url(self.proxy_urls)
-        asyncio.run(self.open())
+        self.loop = asyncio.new_event_loop()  # 创建新的事件循环
+        asyncio.set_event_loop(self.loop)  # 设置为当前线程的事件循环
+        self.loop.run_until_complete(self.open())  # 启动异步任务
+
+    def end(self):
+        self.flag = False
+        if self.server_api:
+            self.server_api.close()  # 关闭服务器
+        if self.loop:
+            for task in asyncio.all_tasks(self.loop):
+                task.cancel()
+            self.loop.stop()  # 停止事件循环
+            # self.loop.close()  # 关闭事件循环
+        self.join()  # 等待线程结束
 
     def url(self, proxy_urls):
         if proxy_urls is not None:
@@ -82,7 +99,7 @@ class PortForwards(multiprocessing.Process):
         # 处理数据流转发 =============================================
         async def forward(source, target):
             try:  # 将数据从一个流转发到另一个流 ---------------------
-                while True:
+                while self.flag:
                     data = await source.read(4096)
                     if not data:
                         break
@@ -101,10 +118,12 @@ class PortForwards(multiprocessing.Process):
 
 
 if __name__ == "__main__":
+    multiprocessing.freeze_support()
     port = PortForwards(
         "8080", "127.0.0.1",
-        "1080", "127.0.0.1",
-        "UDP")
+        "1080", "10.1.1.1",
+        "TCP")
     port.start()
-    # time.sleep(10)
-    # port.kill()
+    time.sleep(10)
+    port.kill()
+    # port.end()
