@@ -44,7 +44,9 @@ class UdpForwarder:
     # 遇到错误时 #####################################################################
     def error_received(self, exc):
         print(f"Error in UDP forward: {exc}")
+        exit(3)
 
     # 连接丢失时 #####################################################################
     def connection_lost(self, exc):
         print("UDP connection lost")
+        exit(4)
