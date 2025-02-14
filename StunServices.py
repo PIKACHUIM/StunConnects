@@ -7,9 +7,9 @@ import logging
 import inspect
 
 class PythonService(win32serviceutil.ServiceFramework):
-    _svc_name_ = "PythonService" #服务名
-    _svc_display_name_ = "Python Service Test" #服务在windows系统中显示的名称
-    _svc_description_ = "这是一段python服务代码 " #服务描述
+    _svc_name_ = "StunConnects" #服务名
+    _svc_display_name_ = "STUN 映射助手" #服务在windows系统中显示的名称
+    _svc_description_ = "自动化映射STUN公网端口到本地" #服务描述
 
     def __init__(self, args):
         win32serviceutil.ServiceFramework.__init__(self, args)

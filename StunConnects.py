@@ -1,13 +1,13 @@
-import json
-import os
 import random
 import socket
+import json
 import sys
-from ftplib import all_errors
-
+import os
 import flet as ft
 import webbrowser
 import multiprocessing
+
+from TrayConnects import TrayConnects
 from portForwards.TaskManagers import Task
 
 
@@ -25,6 +25,7 @@ class StunConnects(ft.Column):
         self.update_time = 600
         self.server_flag = False
         self.starts_flag = False
+        self.create_flag = False
         self.load_configs()
         # 新增组件 =======================================
         # 跳转链接 ---------------------------------------
@@ -70,7 +71,7 @@ class StunConnects(ft.Column):
                 controls=[
                     ft.Text(
                         "------------------------------------------\n"
-                        "         STUN 映射助手 v0.2 Beta          \n"
+                        "         STUN 映射助手 v0.3 Beta          \n"
                         "             GPL-3.0 License              \n"
                         "            作者：Pikachu Ren             \n"
                         "------------------------------------------\n"
@@ -99,6 +100,7 @@ class StunConnects(ft.Column):
             value=False,
             label="已禁用",
             on_change=lambda e: self.conf_service(e),
+            disabled=True,
         )
         self.dlg_conf = ft.AlertDialog(
             title=ft.Text("设置"),
@@ -114,6 +116,7 @@ class StunConnects(ft.Column):
                                 border=ft.InputBorder.UNDERLINE,
                                 width=85,
                                 on_change=None,
+                                disabled=True,
                             ),
                             ft.Text("秒")
                         ]
@@ -125,6 +128,7 @@ class StunConnects(ft.Column):
                                 text=" 查看日志",
                                 icon=ft.Icons.LOGO_DEV_ROUNDED,
                                 on_click=None,
+                                disabled=True,
                             )
                         ],
                         alignment=ft.MainAxisAlignment.START
@@ -281,6 +285,7 @@ class StunConnects(ft.Column):
                 ],
             ),
         ]
+        self.create_flag = True
 
     # 新增项目 =============================================================
     def add_clicked(self, e):
@@ -306,9 +311,6 @@ class StunConnects(ft.Column):
                         self.map_name.value,
                         self.map_port.value,
                         self.map_type.value,
-                        self.task_changed,
-                        self.task_deleted,
-                        self.hosts,
                         self)
             # 清空内容 ---------------------------------
             self.tasks.controls.append(task)
@@ -318,6 +320,30 @@ class StunConnects(ft.Column):
             self.task_changed(None)
             self.update()
 
+    # def task_windows(self, e):
+    #     if e.data == "close":
+    #         self.task_killall()
+
+    # 全部开始 =============================================================
+    def open_all_map(self):
+        for task in self.tasks.controls:
+            task.map_open.value = True
+            task.open_clicked(None)
+        self.update()
+
+    # 全部停止 =============================================================
+    def stop_all_map(self):
+        for task in self.tasks.controls:
+            task.map_open.value = False
+            task.open_clicked(None)
+        self.update()
+
+    # 全部删除 =============================================================
+    def task_killall(self):
+        for task in self.tasks.controls:
+            if task.map_open.value and task.ports is not None:
+                task.stop_mapping()
+
     # 修改项目 =============================================================
     def task_started(self, e):
         for task in self.tasks.controls:
@@ -325,7 +351,6 @@ class StunConnects(ft.Column):
                 task.map_open.value = True
                 task.open_clicked(None)
                 task.update()
-        # self.before_update()
         self.update()
 
     # 修改项目 =============================================================
@@ -340,19 +365,21 @@ class StunConnects(ft.Column):
 
     # 修改设置 =============================================================
     def conf_changed(self, e):
-
-        self.save_configs()
-        self.update()
+        if self.create_flag:
+            self.save_configs()
+            self.update()
 
     # 修改项目 =============================================================
     def task_changed(self, e):
-        self.save_configs()
-        self.update()
+        if self.create_flag:
+            self.save_configs()
+            self.update()
 
     # 删除项目 =============================================================
     def task_deleted(self, task):
-        self.tasks.controls.remove(task)
-        self.update()
+        if self.create_flag:
+            self.tasks.controls.remove(task)
+            self.update()
 
     # 选中项目 =============================================================
     def item_clicked(self, e):
@@ -413,15 +440,16 @@ class StunConnects(ft.Column):
                     self.starts_flag = conf_data["starts_flag"]
                 if "tasker_list" in conf_data:
                     for tasker_list in conf_data["tasker_list"]:
-                        self.tasks.controls.append(Task(
+                        task = Task(
                             tasker_list['url_text'],
                             tasker_list['map_name'],
                             tasker_list['map_port'],
                             tasker_list['map_type'],
-                            self.task_changed,
-                            self.task_deleted,
-                            self.hosts,
-                            self))
+                            self,
+                            tasker_list['map_flag'] \
+                                if 'map_flag' in tasker_list else True)
+                        task.open_clicked(None, action=False)
+                        self.tasks.controls.append(task)
 
     # 写入设置 ================================================================
     def save_configs(self):
@@ -435,14 +463,15 @@ class StunConnects(ft.Column):
                     "url_text": tasker_item.url_text_data,
                     "map_name": tasker_item.map_name_data,
                     "map_port": tasker_item.map_port_data,
-                    "map_type": tasker_item.map_type_data
+                    "map_type": tasker_item.map_type_data,
+                    "map_flag": tasker_item.map_open.value,
                 }
                     for tasker_item in self.tasks.controls
                 ]
             }
             conf_file.write(json.dumps(conf_data))
 
-    def conf_startup(self, app_name="Stun Connect"):
+    def conf_startup(self, e, app_name="Stun Connect"):
         try:
             if sys.platform.startswith('win32'):
                 import winreg
@@ -451,31 +480,82 @@ class StunConnects(ft.Column):
                     winreg.HKEY_CURRENT_USER,
                     r"Software\Microsoft\Windows\CurrentVersion\Run",
                     0, winreg.KEY_SET_VALUE)
+
                 if self.sys_auto.value:
+                    winreg.DeleteValue(key, app_name)
                     winreg.SetValueEx(key, app_name, 0,
-                                      winreg.REG_SZ, sys.executable)
+                                      winreg.REG_SZ, sys.executable + " --hide-window")
+                    print(f"添加启动：{sys.executable}")
                 else:
                     winreg.DeleteValue(key, app_name)
+                    print(f"移除启动：{sys.executable}")
                 winreg.CloseKey(key)
-            print(f"程序已添加到开机启动项：{sys.executable}")
         except FileNotFoundError:
-            print(f"启动项 {app_name} 不存在。")
+            print(f"发生错误：启动项 {app_name} 不存在。")
         except PermissionError:
-            print(f"需要管理员权限来修改注册表。")
+            print(f"权限不足：需要管理员权限来修改注册表")
         except Exception as e:
             print(f"发生错误：{e}")
 
     def conf_service(self):
         pass
 
+
 # 主渲染函数 #################################################################
 def main(page: ft.Page):
-    page.title = "STUN 映射助手 v0.2 Beta"
+    # tray = None
+    page.title = "STUN 映射助手 v0.3 Beta"
     page.fonts = {"MapleMono": "MapleMono-SC.ttf"}
     page.theme = ft.Theme(font_family="MapleMono")
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
     page.scroll = ft.ScrollMode.ADAPTIVE
-    page.add(StunConnects())
+    view = StunConnects()
+    page.window.prevent_close = True
+    page.window.height = 750
+    page.window.width = 750
+    page.window.opacity = 0.9
+    page.window.center()
+
+    for argc in sys.argv:
+        if argc.find("hide-window") >= 0:
+            if sys.platform.startswith('win32'):
+                page.window.always_on_top = False
+                page.window_hidden = True
+                page.window.skip_task_bar = True
+                page.window.minimized = True
+
+    def full_windows(e=None):
+        page.window.skip_task_bar = False
+        page.window_hidden = False
+        page.window.focused = True
+        page.window.always_on_top = True
+        page.update()
+
+    def exit_windows(e=None):
+        view.task_killall()
+        page.window.prevent_close = False
+        page.window.close()
+
+    def deal_windows(e):
+        if e.data == "close":
+            exit_windows()
+        elif e.data == "minimize":
+            page.window.always_on_top = False
+            if sys.platform.startswith('win32'):
+                page.window_hidden = True
+                page.window.skip_task_bar = True
+                page.update()
+
+    tray = TrayConnects(
+        full_windows,
+        exit_windows,
+        view.open_all_map,
+        view.stop_all_map
+    )
+    tray.run()
+    page.add(view)
+    page.window.on_event = deal_windows
+    page.update()
 
 
 if __name__ == "__main__":

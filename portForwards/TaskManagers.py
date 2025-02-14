@@ -12,23 +12,21 @@ class Task(ft.Column):
                  map_name,
                  map_port,
                  map_type,
-                 task_change,
-                 task_delete,
-                 host_locals,
-                 in_super,
+                 in_super=None,
+                 is_start=True,
                  ):
         super().__init__()
-        # 关键数据 =====================
+        # 关键数据 ==================================
         self.width = 720
         self.ports = None
         self.watch = None
         self.check = False
         self.super = in_super
-        # 事件处理 =====================
-        self.on_change = task_change
-        self.on_delete = task_delete
-        self.now_local = host_locals
-        #  代理信息 ====================
+        # 事件处理 ==================================
+        self.on_change = self.super.task_changed
+        self.on_delete = self.super.task_deleted
+        self.now_local = self.super.hosts
+        #  代理信息 =================================
         self.url_text_data = url_text
         self.map_name_data = map_name
         self.map_port_data = map_port
@@ -82,7 +80,7 @@ class Task(ft.Column):
             # label=" ✔️",
             label="",
             on_change=self.open_clicked,
-            value=True,
+            value=is_start,
         )
         # 代理删除 ===================================
         self.map_kill = ft.IconButton(
@@ -142,7 +140,7 @@ class Task(ft.Column):
         self.open_mapping()
 
     # 切换 ####################################################################
-    def open_clicked(self, e):
+    def open_clicked(self, e, action=True):
         # 关闭代理时 =======================================
         if not self.map_open.value:
             self.stop_mapping()  # 关闭代理
@@ -168,7 +166,6 @@ class Task(ft.Column):
             # 修改宽度内容 ---------------------------------
             self.url_copy.visible = False
             self.url_pubs.visible = False
-            # self.map_name.visible = False
             self.map_kill.visible = True
             self.set_name.visible = True
             # self.map_open.label = " ❌"
@@ -201,7 +198,6 @@ class Task(ft.Column):
             # 修改宽度和内容 -------------------------------
             self.url_copy.visible = True
             self.url_pubs.visible = True
-            # self.map_name.visible = True
             self.set_name.visible = False
             self.map_kill.visible = False
             # self.map_open.label = " ✔️"
@@ -211,8 +207,10 @@ class Task(ft.Column):
             # 启动代理 -------------------------------------
             self.open_mapping()
         # 更新界面 =========================================
-        self.on_change(None)
-        self.update()
+        if action:
+            self.item_checked()
+            self.on_change(None)
+            self.update()
 
     # 操作 ####################################################################
     def item_checked(self):
@@ -221,7 +219,10 @@ class Task(ft.Column):
             self.url_text.value = "https://" + self.url_text.value
         # 获取内容 -----------------------------------------------
         self.url_text_data = self.url_text.value
-        self.map_name_data = self.map_name.value
+        if self.map_open.value:
+            self.map_name_data = self.map_name.label
+        else:
+            self.map_name_data = self.set_name.value
         self.map_port_data = self.map_port.value
         self.map_type_data = self.map_type.value
         self.before_update()
@@ -229,7 +230,7 @@ class Task(ft.Column):
     # 按钮 ####################################################################
     # 开始映射 ================================================================
     def open_mapping(self):
-        if self.ports is None:
+        if self.ports is None and self.map_open.value:
             self.ports = PortForwards(
                 self.map_port_data,
                 "0.0.0.0",
@@ -261,4 +262,3 @@ class Task(ft.Column):
     def item_clicked(self, e):
         self.check = self.map_name.value
         self.on_change(e)
-
