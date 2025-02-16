@@ -1,15 +1,10 @@
-# import multiprocessing
 import threading
-import time
 import pystray
 from PIL import Image
 from pystray import MenuItem
 
-# class TrayConnects(multiprocessing.Process):
-# class TrayConnects(threading.Thread):
+from subModules.FindResource import FindResource
 
-def test():
-    print("111")
 
 class TrayConnects():
     def __init__(self,
@@ -30,7 +25,7 @@ class TrayConnects():
             MenuItem('打开', self.set),
             MenuItem('退出', self.end)
         )
-        self.icon = Image.open("i18nLanguage/icons.png")
+        self.icon = Image.open(FindResource.get("appSources/icons.png"))
         self.tray = pystray.Icon("STUN 映射助手", self.icon,
                                  "STUN 映射助手", self.menu)
 

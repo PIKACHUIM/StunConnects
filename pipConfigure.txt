@@ -1,2 +1,6 @@
 requests
 flet
+pystray
+pillow
+pyperclip
+#pywin32

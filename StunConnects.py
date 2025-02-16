@@ -1,4 +1,5 @@
 import random
+import shutil
 import socket
 import json
 import sys
@@ -7,34 +8,48 @@ import flet as ft
 import webbrowser
 import multiprocessing
 
-from TrayConnects import TrayConnects
-from portForwards.TaskManagers import Task
+from subModules.TimeWatchers import TimeWatchers
+from subModules.TrayConnects import TrayConnects
+from subModules.FindResource import FindResource
+from subModules.TaskManagers import TaskManagers
+from subModules.LogRecorders import Log, LL as L
 
 
 class StunConnects(ft.Column):
     # 软件UI ############################################################################
     def __init__(self):
         super().__init__()
-        # 全局设置 =======================================
+        # 全局设置 ============================================
         self.dialog = None
         self.hosts = None
         self.width = 720  # 宽度
         self.tasks = ft.Column()  # 任务列表
+        self.print = Log("StunConnects",
+                         "StunConnects",
+                         "InitClassObj").log
         self.get_local_ip()
-        # 全局设置 =======================================
+        # 全局设置 ============================================
         self.update_time = 600
         self.server_flag = False
         self.starts_flag = False
         self.create_flag = False
         self.load_configs()
-        # 新增组件 =======================================
-        # 跳转链接 ---------------------------------------
+        # 新增组件 ============================================
+        # 备注名称 --------------------------------------------
         self.map_name = ft.TextField(
             hint_text="备注名称",
             on_submit=self.add_clicked,
             width=110,
             label="备注名称",
         )
+        # 跳转链接 --------------------------------------------
+        self.url_text = ft.TextField(
+            hint_text="https://1web.us.kg/s/XXXXXXXX",
+            on_submit=self.add_clicked,
+            expand=True,
+            label="跳转链接",
+        )
+        # 需要名称 --------------------------------------------
         self.dlg_name = ft.AlertDialog(
             title=ft.Text("错误"),
             content=ft.Text("请输入备注名称"),
@@ -45,14 +60,8 @@ class StunConnects(ft.Column):
                         self.dlg_name))
             ],
         )
-        # 跳转链接 ----------------------------------------
-        self.url_text = ft.TextField(
-            hint_text="https://1web.us.kg/s/XXXXXXXX",
-            on_submit=self.add_clicked,
-            expand=True,
-            label="跳转链接",
-        )
-        self.dlg_addr = ft.AlertDialog(
+        # 映射错误 --------------------------------------------
+        self.dlg_host = ft.AlertDialog(
             title=ft.Text("错误"),
             content=ft.Text(
                 "请正确填写短链接地址:\n"
@@ -62,162 +71,195 @@ class StunConnects(ft.Column):
                 ft.TextButton(
                     "OK",
                     on_click=lambda e: self.page.close(
-                        self.dlg_addr))
+                        self.dlg_host))
             ],
         )
+        # 关于页面 --------------------------------------------
         self.dlg_info = ft.AlertDialog(
             title=ft.Text("关于 STUN 映射助手"),
-            content=ft.Column(
-                controls=[
-                    ft.Text(
-                        "------------------------------------------\n"
-                        "         STUN 映射助手 v0.3 Beta          \n"
-                        "             GPL-3.0 License              \n"
-                        "            作者：Pikachu Ren             \n"
-                        "------------------------------------------\n"
-                        "一个免流量和免公网转发的STUN映射自动化工具\n"
-                        "支持将Lucky 等工具映射的端口绑定到本地使用\n"
-                        "https://github.com/PIKACHUIM/StunConnects \n"
-                        "\n"
-                        "这是免费的软件，但你可以打赏作者一瓶番茄酱\n"),
-                    ft.Image(
-                        src="i18nLanguage/paids.jpg", width=360, height=250)
-                ]),
-            actions=[
+            content=ft.Column(controls=[ft.Text(
+                "------------------------------------------\n"
+                "         STUN 映射助手 v0.4 Beta          \n"
+                "             GPL-3.0 License              \n"
+                "            作者：Pikachu Ren             \n"
+                "------------------------------------------\n"
+                "一个免流量和免公网转发的STUN映射自动化工具\n"
+                "支持将Lucky 等工具映射的端口绑定到本地使用\n"
+                "https://github.com/PIKACHUIM/StunConnects \n"
+                "\n"
+                "这是免费的软件，但你可以打赏作者一瓶番茄酱\n"
+            ), ft.Image(
+                src=FindResource.get("appSources/paids.jpg"),
+                width=360, height=250)
+            ]), actions=[
                 ft.TextButton(
                     "OK",
                     on_click=lambda e:
                     self.page.close(
-                        self.dlg_info))
-            ],
-        )
+                        self.dlg_info))], )
+        # 设置开关 --------------------------------------------
         self.sys_auto = ft.Switch(
-            value=False,
+            value=self.starts_flag,
             label="已禁用",
             on_change=lambda e: self.conf_startup(e),
         )
         self.sys_demo = ft.Switch(
-            value=False,
+            value=self.server_flag,
             label="已禁用",
             on_change=lambda e: self.conf_service(e),
-            disabled=True,
         )
+
+        # 设置时间 --------------------------------------------
+        def new_time(e):
+            self.update_time = self.set_time.value
+            self.manage_dogs.time = self.set_time.value
+
+        self.set_time = ft.TextField(
+            value=str(self.update_time),
+            hint_text="600",
+            text_align=ft.TextAlign.RIGHT,
+            border=ft.InputBorder.UNDERLINE,
+            width=85,
+            on_change=new_time
+        )
+
+        # 设置页面 =============================================
         self.dlg_conf = ft.AlertDialog(
             title=ft.Text("设置"),
-            content=ft.Column(
-                controls=[
-                    ft.Row(
-                        controls=[
-                            ft.Text("自动更新周期："),
-                            ft.TextField(
-                                value=str(self.update_time),
-                                hint_text="600",
-                                text_align=ft.TextAlign.RIGHT,
-                                border=ft.InputBorder.UNDERLINE,
-                                width=85,
-                                on_change=None,
-                                disabled=True,
-                            ),
-                            ft.Text("秒")
-                        ]
-                    ),
-                    ft.Row(
-                        controls=[
-                            ft.Text("查看运行日志："),
-                            ft.Button(
-                                text=" 查看日志",
-                                icon=ft.Icons.LOGO_DEV_ROUNDED,
-                                on_click=None,
-                                disabled=True,
-                            )
-                        ],
-                        alignment=ft.MainAxisAlignment.START
-                    ),
-
-                    ft.Row(
-                        controls=[
-                            ft.Text("作为服务安装："),
-                            self.sys_demo
-                        ],
-                        alignment=ft.MainAxisAlignment.START
-                    ),
-                    ft.Row(
-                        controls=[
-                            ft.Text("开机自动启动："),
-                            self.sys_auto
-                        ],
-                        alignment=ft.MainAxisAlignment.START
-                    ),
-                ],
-                alignment=ft.MainAxisAlignment.START
-            ),
+            content=ft.Column(controls=[ft.Row(controls=[
+                # 更新周期 -------------------------------------
+                ft.Text("自动更新周期："),
+                self.set_time,
+                ft.Text("秒")]),
+                # 运行日志 -------------------------------------
+                ft.Row(controls=[
+                    ft.Text("查看运行日志："),
+                    ft.Button(
+                        text=" 查看日志",
+                        icon=ft.Icons.LOGO_DEV_ROUNDED,
+                        on_click=lambda e: os.system(
+                            "explorer.exe " +
+                            "StunConnects.log"))],
+                    alignment=ft.MainAxisAlignment.START),
+                # 服务安装 -------------------------------------
+                ft.Row(controls=[
+                    ft.Text("作为服务安装："),
+                    self.sys_demo],
+                    alignment=ft.MainAxisAlignment.START) if \
+                    sys.platform.startswith('win32') else \
+                    ft.Container(),
+                # 开机自启 -------------------------------------
+                ft.Row(controls=[
+                    ft.Text("开机自动启动："),
+                    self.sys_auto],
+                    alignment=ft.MainAxisAlignment.START), ],
+                alignment=ft.MainAxisAlignment.START),
+            # 事件按钮 -----------------------------------------
             actions=[
-                ft.TextButton("保存", on_click=self.conf_changed),
-                ft.TextButton("取消", on_click=lambda e:
-                self.page.close(
-                    self.dlg_conf))
-            ],
-            actions_alignment=ft.MainAxisAlignment.END
-        )
-
-        # 本地端口 ----------------------------------------
+                ft.TextButton("保存",
+                              on_click=self.conf_changed),
+                ft.TextButton("取消",
+                              on_click=lambda e:
+                              self.page.close(self.dlg_conf))],
+            actions_alignment=ft.MainAxisAlignment.END)
+        # 本地端口 ---------------------------------------------
         self.map_port = ft.TextField(
             width=110,
             hint_text="3000",
             label="本地端口",
             on_submit=self.add_clicked,
         )
-
-        # 映射类型 ----------------------------------------
+        # 映射类型 ---------------------------------------------
         self.map_type = ft.Dropdown(
             width=100,
             label="映射类型",
             options=[
                 ft.dropdown.Option("All"),
                 ft.dropdown.Option("TCP"),
-                ft.dropdown.Option("UDP"),
-            ],
-        )
+                ft.dropdown.Option("UDP"), ], )
         self.map_type.value = "All"
-
-        # 过滤器 ------------------------------------------
+        # 过滤器 ----------------------------------------------
         self.filter = ft.Tabs(
             scrollable=False,
             selected_index=0,
             on_change=self.task_changed,
             tabs=[ft.Tab(text="所有映射"),
                   ft.Tab(text="正在映射"),
-                  ft.Tab(text="停止映射")],
-        )
-        # 按钮 --------------------------------------------
+                  ft.Tab(text="停止映射")], )
+        # 启动 ------------------------------------------------
         self.open_map = ft.Button(
             text="启动", on_click=self.task_started,
             icon=ft.Icons.NOT_STARTED_ROUNDED,
             disabled=True,
-        )
+            visible=not self.server_flag)
+        # 停止 ------------------------------------------------
         self.stop_map = ft.Button(
             text="停止", on_click=self.task_stopped,
             icon=ft.Icons.STOP_ROUNDED,
             disabled=True,
-        )
+            visible=not self.server_flag)
+        # 删除 ------------------------------------------------
         self.kill_map = ft.Button(
             text="删除", on_click=self.item_clicked,
             icon=ft.Icons.DELETE_ROUNDED,
             disabled=True,
+            visible=not self.server_flag)
+        # 服务 ================================================
+        self.demo_run = ft.Switch(
+            label=" 已启用",
+            on_change=None,
+            value=True,
         )
+        self.demo_dlg = ft.AlertDialog(
+            title=ft.Text("服务状态"),
+            content=ft.Column(controls=[
+                ft.Row(controls=[
+                    ft.Text("服务状态："),
+                    self.demo_run
+                ]),
+                ft.Row(controls=[
+                    ft.Text("重启服务："),
+                    ft.Button(
+                        text="重启此服务",
+                        icon=ft.Icons.RESTART_ALT_ROUNDED,
+                        on_click=None, )
+                ]),
+                ft.Row(controls=[
+                    ft.Text("更新时间："),
+                    ft.Text(value="25-01-01 16:00", )
+                ]),
+                ft.Row(controls=[
+                    ft.Text("服务模式下更改不会立即生效\n"
+                            "请点击[应用更改]让更改生效")]),
+            ]),
+            actions=[
+                ft.TextButton(
+                    "OK",
+                    on_click=lambda e: self.page.close(
+                        self.demo_dlg))
+            ],
+        ) if sys.platform.startswith('win32') else ft.Container()
+        self.demo_txt = ft.OutlinedButton(
+            text="服务模式",
+            visible=self.server_flag,
+            icon=ft.Icons.MISCELLANEOUS_SERVICES_ROUNDED,
+            on_click=lambda e: self.page.open(self.demo_dlg)
+        ) if sys.platform.startswith('win32') else ft.Container()
+        self.demo_set = ft.Button(
+            text="应用更改",
+            icon=ft.Icons.RESTART_ALT_ROUNDED,
+            visible=self.server_flag,
+        ) if sys.platform.startswith('win32') else ft.Container()
         # 底部 --------------------------------------------
-        self.items_left = ft.Text("0个已选中")
-
+        self.item_num = ft.Text("0个已选中")
         # UI设置 ##################################################################################
         self.controls = [
             # 标题行 ==============================================================================
             ft.Row(
                 [
                     ft.Text(value="STUN 映射助手",
-                            theme_style=ft.TextThemeStyle.HEADLINE_MEDIUM)
-                ],
-                alignment=ft.MainAxisAlignment.CENTER,
-            ),
+                            theme_style=ft.TextThemeStyle.HEADLINE_MEDIUM)],
+                alignment=ft.MainAxisAlignment.CENTER, ),
             # 新增行 ==============================================================================
             ft.Row(
                 controls=[
@@ -227,65 +269,46 @@ class StunConnects(ft.Column):
                     self.map_type,
                     ft.FloatingActionButton(
                         icon=ft.Icons.ADD,
-                        on_click=self.add_clicked
-                    ),
-                ],
+                        on_click=self.add_clicked), ],
             ),
             # 任务列表 ============================================================================
             ft.Column(
-                spacing=25,
-                controls=[
+                spacing=25, expand=True, controls=[
                     self.filter,
                     self.tasks,
+                    ft.Container(expand=True),
                     ft.Row(
                         alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
                         vertical_alignment=ft.CrossAxisAlignment.CENTER,
                         controls=[
-                            self.items_left,
-                            self.open_map,
-                            self.stop_map,
-                            self.kill_map,
-                            # ft.Dropdown(
-                            #     width=80,
-                            #     label="更新周期",
-                            #     expand=True,
-                            #     options=[
-                            #         ft.dropdown.Option("10分钟"),
-                            #         ft.dropdown.Option("30分钟"),
-                            #         ft.dropdown.Option("60分钟"),
-                            #     ],
-                            #     border=ft.InputBorder.UNDERLINE
-                            # ),
+                            self.item_num, self.open_map,
+                            self.demo_txt, self.demo_set,
+                            self.stop_map, self.kill_map,
                             ft.Button(
                                 text="设置",
                                 on_click=lambda e: self.page.open(self.dlg_conf),
-                                icon=ft.Icons.SETTINGS_ROUNDED,
-                            ),
+                                icon=ft.Icons.SETTINGS_ROUNDED, ),
                             ft.Button(
                                 text="教程",
                                 on_click=lambda e: webbrowser.open(
-                                    "https://github.com/PIKACHUIM/StunConnects/blob/main/USAGES.MD"
-                                ),
-                                icon=ft.Icons.BOOK_ROUNDED,
-                            ),
+                                    "https://github.com/PIKACHUIM/StunConnects/blob/main/USAGES.MD"),
+                                icon=ft.Icons.BOOK_ROUNDED, ),
                             ft.Button(
                                 text="关于",
                                 on_click=lambda e: self.page.open(self.dlg_info),
-                                icon=ft.Icons.INFO_ROUNDED,
-                            ),
+                                icon=ft.Icons.INFO_ROUNDED, ),
                             ft.Button(
                                 text="Github",
                                 on_click=lambda e: webbrowser.open(
-                                    "https://github.com/PIKACHUIM/StunConnects"
-                                ),
-                                icon=ft.Icons.LINK_ROUNDED,
-                            ),
-                        ],
-                    ),
-                ],
-            ),
-        ]
+                                    "https://github.com/PIKACHUIM/StunConnects"),
+                                icon=ft.Icons.LINK_ROUNDED, ),
+                        ], ), ], ), ]
         self.create_flag = True
+        self.manage_dogs = TimeWatchers(
+            self.tasks.controls,
+            in_time=10,
+        )
+        # self.manage_dogs.start()
 
     # 新增项目 =============================================================
     def add_clicked(self, e):
@@ -297,7 +320,7 @@ class StunConnects(ft.Column):
         if not self.url_text.value \
                 or (self.url_text.value.find("http://") < 0
                     and self.url_text.value.find("https://") < 0):
-            self.page.open(self.dlg_addr)
+            self.page.open(self.dlg_host)
             return None
         # 判定端口 ---------------------------------------------------------
         if not self.map_port.value:
@@ -307,11 +330,11 @@ class StunConnects(ft.Column):
             self.map_type.value = "All"
         # 执行创建 ---------------------------------------------------------
         if self.url_text.value and self.map_name.value:
-            task = Task(self.url_text.value,
-                        self.map_name.value,
-                        self.map_port.value,
-                        self.map_type.value,
-                        self)
+            task = TaskManagers(self.url_text.value,
+                                self.map_name.value,
+                                self.map_port.value,
+                                self.map_type.value,
+                                self)
             # 清空内容 ---------------------------------
             self.tasks.controls.append(task)
             self.map_port.value = ""
@@ -319,10 +342,6 @@ class StunConnects(ft.Column):
             self.url_text.value = ""
             self.task_changed(None)
             self.update()
-
-    # def task_windows(self, e):
-    #     if e.data == "close":
-    #         self.task_killall()
 
     # 全部开始 =============================================================
     def open_all_map(self):
@@ -340,6 +359,7 @@ class StunConnects(ft.Column):
 
     # 全部删除 =============================================================
     def task_killall(self):
+        self.manage_dogs.flag = False
         for task in self.tasks.controls:
             if task.map_open.value and task.ports is not None:
                 task.stop_mapping()
@@ -396,23 +416,22 @@ class StunConnects(ft.Column):
         end_counts = 0
         for task in self.tasks.controls:
             task.visible = (
-                    now_status == "所有映射"
-                    or (now_status == "正在映射" and task.map_open.value)
-                    or (now_status == "停止映射" and not task.map_open.value)
-            )
+                    now_status == "所有映射" or
+                    (now_status == "正在映射" and task.map_open.value) or
+                    (now_status == "停止映射" and not task.map_open.value))
             all_counts += 1 if task.check else 0  # 选中项目
             if task.check:
                 now_counts += 0 if task.ports is None else 1  # 正在映射
                 end_counts += 1 if task.ports is None else 0  # 停止映射
         # 修改按钮状态 ------------------------------------------------------
-        self.items_left.value = f"{all_counts}个已选中"
+        self.item_num.value = f"{all_counts}个已选中"
         self.open_map.disabled = end_counts <= 0  # 没有已停止项目时
         self.stop_map.disabled = now_counts <= 0 or all_counts <= 0
         self.kill_map.disabled = all_counts <= 0  # 没有选中任何项目
-        # print(all_counts, now_counts, end_counts)
 
     # 获取地址 ==============================================================
     def get_local_ip(self):
+        LT = "get_local_ip"
         try:
             # 创建一个UDP套接字（不连接到任何地址）
             s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -420,7 +439,7 @@ class StunConnects(ft.Column):
             s.connect(("8.8.8.8", 80))
             # 获取本机IP地址
             self.hosts = s.getsockname()[0]
-            print("Client:", "IP-" + self.hosts)
+            self.print("Client: LocalIP:" + self.hosts, LT, L.G)
             # 关闭套接字
             s.close()
         except OSError:
@@ -440,7 +459,7 @@ class StunConnects(ft.Column):
                     self.starts_flag = conf_data["starts_flag"]
                 if "tasker_list" in conf_data:
                     for tasker_list in conf_data["tasker_list"]:
-                        task = Task(
+                        task = TaskManagers(
                             tasker_list['url_text'],
                             tasker_list['map_name'],
                             tasker_list['map_port'],
@@ -471,8 +490,12 @@ class StunConnects(ft.Column):
             }
             conf_file.write(json.dumps(conf_data))
 
+    # 自动启动 ================================================================
     def conf_startup(self, e, app_name="Stun Connect"):
+        LT = "conf_startup"
         try:
+            self.starts_flag = self.sys_auto.value
+            self.sys_auto.label = "已启用" if self.server_flag else "已禁用"
             if sys.platform.startswith('win32'):
                 import winreg
                 # 打开注册表项
@@ -480,32 +503,70 @@ class StunConnects(ft.Column):
                     winreg.HKEY_CURRENT_USER,
                     r"Software\Microsoft\Windows\CurrentVersion\Run",
                     0, winreg.KEY_SET_VALUE)
-
                 if self.sys_auto.value:
-                    winreg.DeleteValue(key, app_name)
+                    try:
+                        winreg.DeleteValue(key, app_name)
+                    except (FileNotFoundError, Exception):
+                        pass
                     winreg.SetValueEx(key, app_name, 0,
-                                      winreg.REG_SZ, sys.executable + " --hide-window")
-                    print(f"添加启动：{sys.executable}")
+                                      winreg.REG_SZ,
+                                      sys.executable + " --hide-window")
+                    self.print(f"添加启动：{sys.executable}", LT, L.G)
                 else:
                     winreg.DeleteValue(key, app_name)
-                    print(f"移除启动：{sys.executable}")
+                    self.print(f"移除启动：{sys.executable}", LT, L.G)
                 winreg.CloseKey(key)
+                self.save_configs()
         except FileNotFoundError:
-            print(f"发生错误：启动项 {app_name} 不存在。")
+            self.print(f"发生错误：启动项 {app_name} 不存在。", LT, L.W_)
         except PermissionError:
-            print(f"权限不足：需要管理员权限来修改注册表")
+            self.print(f"权限不足：需要管理员权限来修改注册表", LT, L.E_)
         except Exception as e:
-            print(f"发生错误：{e}")
+            self.print(f"发生错误：{e}", LT, L.E_)
 
-    def conf_service(self):
-        pass
+    # 服务安装 ================================================================
+    def conf_service(self, e):
+        LT = "conf_service"
+        self.server_flag = self.sys_demo.value
+        # 获取路径 =============================================
+        data_path = os.environ.get('APPDATA')
+        nssm_path = FindResource.get("svcon.exe")
+        if self.server_flag:  # 设置服务 =======================
+            try:
+                shutil.copy("StunServices.exe", data_path)
+                shutil.copy(nssm_path, data_path)
+                nssm_path = os.path.join(data_path, "svcon.exe")
+            except (FileNotFoundError, Exception) as err:
+                self.print("创建服务失败: " + str(err), LT, L.W_)
+            os.system("%s install StunConnects \"%s\"" % (
+                nssm_path, data_path + "/StunServices.exe"))
+            os.system(nssm_path + " start StunConnects")
+            self.sys_auto.value = False
+            self.sys_demo.label = "已启用"
+            self.open_map.visible = False
+            self.stop_map.visible = False
+            self.kill_map.visible = False
+            self.demo_set.visible = True
+            self.demo_txt.visible = True
+            self.conf_startup(None)
+            self.update()
+        else:  # 删除服务 ===================================
+            os.system(nssm_path + " stop StunConnects")
+            os.system(nssm_path + " remove StunConnects")
+            self.sys_demo.label = "已禁用"
+            self.open_map.visible = True
+            self.stop_map.visible = True
+            self.kill_map.visible = True
+            self.demo_set.visible = False
+            self.demo_txt.visible = False
+            self.update()
 
 
-# 主渲染函数 #################################################################
+# 主渲染函数 ###################################################################
 def main(page: ft.Page):
     # tray = None
-    page.title = "STUN 映射助手 v0.3 Beta"
-    page.fonts = {"MapleMono": "MapleMono-SC.ttf"}
+    page.title = "STUN 映射助手 v0.4 Beta"
+    page.fonts = {"MapleMono": FindResource.get("appSources/fonts.ttf")}
     page.theme = ft.Theme(font_family="MapleMono")
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
     page.scroll = ft.ScrollMode.ADAPTIVE
@@ -513,9 +574,10 @@ def main(page: ft.Page):
     page.window.prevent_close = True
     page.window.height = 750
     page.window.width = 750
-    page.window.opacity = 0.9
+    page.window.opacity = 0.95
     page.window.center()
 
+    # 处理参数 =============================================
     for argc in sys.argv:
         if argc.find("hide-window") >= 0:
             if sys.platform.startswith('win32'):
@@ -524,6 +586,7 @@ def main(page: ft.Page):
                 page.window.skip_task_bar = True
                 page.window.minimized = True
 
+    # 打开窗口 ============================================
     def full_windows(e=None):
         page.window.skip_task_bar = False
         page.window_hidden = False
@@ -531,11 +594,13 @@ def main(page: ft.Page):
         page.window.always_on_top = True
         page.update()
 
+    # 关闭窗口 ============================================
     def exit_windows(e=None):
         view.task_killall()
         page.window.prevent_close = False
         page.window.close()
 
+    # 处理事件 ============================================
     def deal_windows(e):
         if e.data == "close":
             exit_windows()
@@ -546,13 +611,16 @@ def main(page: ft.Page):
                 page.window.skip_task_bar = True
                 page.update()
 
-    tray = TrayConnects(
-        full_windows,
-        exit_windows,
-        view.open_all_map,
-        view.stop_all_map
-    )
-    tray.run()
+    # 设置托盘 ============================================
+    if sys.platform.startswith('win32'):
+        tray = TrayConnects(
+            full_windows,
+            exit_windows,
+            view.open_all_map,
+            view.stop_all_map
+        )
+        tray.run()
+    # 启动页面 ============================================
     page.add(view)
     page.window.on_event = deal_windows
     page.update()
@@ -561,6 +629,3 @@ def main(page: ft.Page):
 if __name__ == "__main__":
     multiprocessing.freeze_support()
     ft.app(main)
-    # print(sys.orig_argv, sys.argv)
-    # if len(sys.argv) <=1:
-    #     ft.app(main)

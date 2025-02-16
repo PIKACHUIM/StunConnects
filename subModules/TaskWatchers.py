@@ -2,8 +2,10 @@ import threading
 import time
 import flet as ft
 
+from subModules.AllForwarder import PortForwards
 
-class LoopForwarder(threading.Thread):
+
+class taskWatchers(threading.Thread):
     def __init__(self, main):
         super().__init__()
         self.main = main
@@ -15,6 +17,7 @@ class LoopForwarder(threading.Thread):
             2: "解析出错，请检查链接地址",
             3: "转发出错，请检查端口权限",
             4: "连接关闭，请检查网络连接",
+            5: "监听错误，监听端口有错误",
             0: "未知错误",
         }
         while self.flag:
@@ -22,6 +25,14 @@ class LoopForwarder(threading.Thread):
             if self.main.ports is None:
                 return False
             if not self.main.ports.is_alive():
+                if self.main.ports.exitcode == 5:
+                    self.main.ports = PortForwards(
+                        self.main.map_port_data,
+                        "0.0.0.0",
+                        proxy_type=self.main.map_type_data,
+                        proxy_urls=self.main.url_text_data)
+                    self.main.ports.start()
+                    continue
                 self.main.dlg_kill.content = ft.Text(
                     ("映射名称: %s\n"
                      "远程地址: %s\n"

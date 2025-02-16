@@ -1,50 +1,41 @@
-# encoding=utf-8
-import win32serviceutil
-import win32service
-import win32event
+import json
 import os
-import logging
-import inspect
+import time
+from subModules.AllForwarder import PortForwards
 
-class PythonService(win32serviceutil.ServiceFramework):
-    _svc_name_ = "StunConnects" #服务名
-    _svc_display_name_ = "STUN 映射助手" #服务在windows系统中显示的名称
-    _svc_description_ = "自动化映射STUN公网端口到本地" #服务描述
+class StunServices():
+    def __init__(self):
+        self.map_list = []
+        self.set_time = 600
 
-    def __init__(self, args):
-        win32serviceutil.ServiceFramework.__init__(self, args)
-        self.hWaitStop = win32event.CreateEvent(None, 0, 0, None)
-        self.logger = self._getLogger()
-        self.run = True
+    def run(self):
+        self.open()
 
-    def _getLogger(self):
-        logger = logging.getLogger('[PythonService]')
+    # 服务内容 =========================================================
+    def open(self):
+        conf_path = "StunConnects.json"
+        if os.path.exists(conf_path):
+            with open(conf_path, "r", encoding="utf-8") as conf_file:
+                conf_data = json.loads(conf_file.read())
+                if "update_time" in conf_data:
+                    self.set_time = conf_data["update_time"]
+                if "tasker_list" in conf_data:
+                    for tasker_list in conf_data["tasker_list"]:
+                        self.map_list.append(
+                            PortForwards(
+                                tasker_list['map_port'],
+                                "0.0.0.0",
+                                proxy_type=tasker_list['map_type'],
+                                proxy_urls=tasker_list['url_text']))
+                        self.map_list[-1].start()
+        for tasker_item in self.map_list:
+            tasker_item.join()
 
-        this_file = inspect.getfile(inspect.currentframe())
-        dirpath = os.path.abspath(os.path.dirname(this_file))
-        handler = logging.FileHandler(os.path.join(dirpath, "service.log"))
-
-        formatter = logging.Formatter('%(asctime)s %(name)-12s %(levelname)-8s %(message)s')
-        handler.setFormatter(formatter)
-
-        logger.addHandler(handler)
-        logger.setLevel(logging.INFO)
-
-        return logger
-
-    def SvcDoRun(self):
-        import time
-        self.logger.info("service is run....")
-        while self.run:
-            self.logger.info("I am runing....")
-            time.sleep(2)
-
-    def SvcStop(self):
-        self.logger.info("service is stop....")
-        self.ReportServiceStatus(win32service.SERVICE_STOP_PENDING)
-        win32event.SetEvent(self.hWaitStop)
-        self.run = False
+    # 结束服务 =========================================================
+    def stop(self):
+        for tasker_item in self.map_list:
+            tasker_item.kill()
 
 
 if __name__ == '__main__':
-    win32serviceutil.HandleCommandLine(PythonService)
+    stu = StunServices()

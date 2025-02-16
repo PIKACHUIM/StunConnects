@@ -1,12 +1,12 @@
 import os
+import sys
 
 import flet as ft
-import pyperclip
-from portForwards.AllForwarder import PortForwards
-from portForwards.LoopForwarder import LoopForwarder
+from subModules.AllForwarder import PortForwards
+from subModules.TaskWatchers import taskWatchers
+from subModules.LogRecorders import Log, LL as L
 
-
-class Task(ft.Column):
+class TaskManagers(ft.Column):
     def __init__(self,
                  url_text,
                  map_name,
@@ -22,6 +22,7 @@ class Task(ft.Column):
         self.watch = None
         self.check = False
         self.super = in_super
+        self.print = in_super.print
         # 事件处理 ==================================
         self.on_change = self.super.task_changed
         self.on_delete = self.super.task_deleted
@@ -90,14 +91,23 @@ class Task(ft.Column):
             disabled=True, visible=False
         )
         # 本机地址 ===================================
-        self.url_copy = ft.IconButton(
-            ft.Icons.COMPUTER_ROUNDED,
-            tooltip="复制本机地址",
-            on_click=lambda e: pyperclip.copy(
-                "127.0.0.1:" +
-                str(self.map_port.value)),
-            disabled=False,
-        )
+        if sys.platform.endswith("win32"):
+            import pyperclip
+            self.url_copy = ft.IconButton(
+                ft.Icons.COMPUTER_ROUNDED,
+                tooltip="复制本机地址",
+                on_click=lambda e: pyperclip.copy(
+                    "127.0.0.1:" +
+                    str(self.map_port.value)),
+                disabled=False,
+            )
+        else:
+            self.url_copy = ft.IconButton(
+                ft.Icons.COMPUTER_ROUNDED,
+                tooltip="复制本机地址",
+                on_click=None,
+                disabled=False,
+            )
         # 内网地址 ===================================
         self.url_pubs = ft.IconButton(
             ft.Icons.ROUTER_ROUNDED,
@@ -237,18 +247,21 @@ class Task(ft.Column):
                 proxy_type=self.map_type_data,
                 proxy_urls=self.url_text_data)
             self.ports.start()
-            self.watch = LoopForwarder(self)
+            self.watch = taskWatchers(self)
             self.watch.start()
 
     # 停止映射 ================================================================
     def stop_mapping(self):
         # 停止代理 --------------------------------
         if self.ports is not None:
-            self.watch.flag = False
-            self.watch = None
-            print("Killed:", self.map_type_data,
-                  self.ports.local_host +
-                  ":" + self.ports.local_port)
+            if self.watch is not None:
+                self.watch.flag = False
+                self.watch = None
+            self.print("Killed: %s %s:%s" % (
+                self.map_type_data,
+                self.ports.local_host,
+                self.ports.local_port
+            ), "stop_mapping", L.W)
             self.ports.kill()
             self.ports = None
 

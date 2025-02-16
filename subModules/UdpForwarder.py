@@ -1,3 +1,6 @@
+from subModules.LogRecorders import Log, LL as L
+
+
 # UDP 数据转发处理器 #################################################################
 class UdpForwarder:
     # 初始化接口 #####################################################################
@@ -5,7 +8,8 @@ class UdpForwarder:
                  proxy_host,
                  proxy_port,
                  local_host,
-                 local_port):
+                 local_port,
+                 print_logs=None):
         self.proxy_port = int(proxy_port)  # OLD
         self.local_port = int(local_port)  # NEW
         self.proxy_host = proxy_host  # 远程端口
@@ -13,6 +17,7 @@ class UdpForwarder:
         self.start_host = None  # 记录来访问端口
         self.start_port = None  # 记录来访问端口
         self.transports = None  # 记录来访问信息
+        self.logs = print_logs
 
     # 初始化连接 #####################################################################
     def connection_made(self, transport):
@@ -20,9 +25,6 @@ class UdpForwarder:
 
     # 处理数据流 #####################################################################
     def datagram_received(self, data, addr):
-        # print(f"Received UDP data from {addr}: {data}")
-        # print(self.proxy_host, self.proxy_port)
-        # print(self.local_host, self.local_port)
         # 判断来源IP信息 =============================================================
         if len(addr) < 2 or addr[0] is None or addr[1] is None:  # 无效IP:PORT送回远端
             self.transports.sendto(data, (self.proxy_host, self.proxy_port))  # 发数据
@@ -43,10 +45,12 @@ class UdpForwarder:
 
     # 遇到错误时 #####################################################################
     def error_received(self, exc):
-        print(f"Error in UDP forward: {exc}")
+        LT = "error_happen"
+        self.logs("Errors: Error in UDP forward: %s" % str(exc), LT, L.E_)
         exit(3)
 
     # 连接丢失时 #####################################################################
     def connection_lost(self, exc):
-        print("UDP connection lost")
+        LT = "connect_lost"
+        self.logs("Server: UDP connection lost %s" % str(exc), LT, L.W)
         exit(4)
