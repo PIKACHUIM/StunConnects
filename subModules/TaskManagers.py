@@ -245,7 +245,9 @@ class TaskManagers(ft.Column):
                 self.map_port_data,
                 "0.0.0.0",
                 proxy_type=self.map_type_data,
-                proxy_urls=self.url_text_data)
+                proxy_urls=self.url_text_data,
+                in_dog_var=self.super.update_time
+            )
             self.ports.start()
             self.watch = taskWatchers(self)
             self.watch.start()

@@ -1,4 +1,5 @@
 import asyncio
+import sys
 import time
 import requests
 import multiprocessing
@@ -49,7 +50,7 @@ class PortForwards(multiprocessing.Process):
         self.loop = asyncio.new_event_loop()  # 创建新的事件循环
         asyncio.set_event_loop(self.loop)  # 设置-当前线程的事件
         self.dogs = PortWatchers(
-            self, 10, self.logs
+            self, self.time, self.logs
         )
         self.dogs.start()
         try:
@@ -80,6 +81,7 @@ class PortForwards(multiprocessing.Process):
             local_ap = self.proxy_host + ":" + self.proxy_port
             self.logs("Change: " + local_ap, LT, L.G_)
             self.end()
+            sys.exit(5)
             self.loop = asyncio.new_event_loop()  # 创建新的事件循环
             asyncio.set_event_loop(self.loop)  # 设置-当前线程的事件
             self.loop.run_until_complete(self.open())  # 启动asyncio
@@ -99,7 +101,7 @@ class PortForwards(multiprocessing.Process):
                             timeout=30)
                         break
                     except (requests.ConnectTimeout, Exception) as err:
-                        self.logs("Errors: %s" % str(err), LT, L.E)
+                        self.logs("Errors: %s" % str(err), LT, L.W)
                         time.sleep(1)
                         retry -= 1
 
@@ -142,11 +144,10 @@ class PortForwards(multiprocessing.Process):
                 async with self.server_tcp:
                     await self.server_tcp.serve_forever()
                 break
-            except (OSError, Exception) as err:
-                self.logs("Errors：TCP " + str(err), LT, L.E)
+            except (OSError, asyncio.exceptions.CancelledError, Exception) as err:
+                self.logs("Errors：TCP " + str(err), LT, L.W)
                 time.sleep(1)
                 retry -= 1
-
 
     async def start_udp_proxy(self):
         LT = "start_udp_ap"
@@ -170,7 +171,7 @@ class PortForwards(multiprocessing.Process):
                 )
                 break
             except (OSError, Exception) as err:
-                self.logs("Errors：TCP " + str(err), LT, L.E)
+                self.logs("Errors：TCP " + str(err), LT, L.W)
                 time.sleep(1)
                 retry -= 1
         await asyncio.sleep(86400)  # 保持运行，可以调整为其他方式

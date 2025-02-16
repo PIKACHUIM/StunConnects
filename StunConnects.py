@@ -8,7 +8,6 @@ import flet as ft
 import webbrowser
 import multiprocessing
 
-from subModules.TimeWatchers import TimeWatchers
 from subModules.TrayConnects import TrayConnects
 from subModules.FindResource import FindResource
 from subModules.TaskManagers import TaskManagers
@@ -107,12 +106,19 @@ class StunConnects(ft.Column):
             value=self.server_flag,
             label="已禁用",
             on_change=lambda e: self.conf_service(e),
+            disabled=True
         )
 
         # 设置时间 --------------------------------------------
         def new_time(e):
             self.update_time = self.set_time.value
-            self.manage_dogs.time = self.set_time.value
+            for task_now in self.tasks.controls:
+                if task_now.ports is None:
+                    continue
+                if task_now.ports.dogs is None:
+                    continue
+                task_now.ports.dogs.time = self.set_time.value
+            self.save_configs()
 
         self.set_time = ft.TextField(
             value=str(self.update_time),
@@ -148,6 +154,7 @@ class StunConnects(ft.Column):
                     alignment=ft.MainAxisAlignment.START) if \
                     sys.platform.startswith('win32') else \
                     ft.Container(),
+
                 # 开机自启 -------------------------------------
                 ft.Row(controls=[
                     ft.Text("开机自动启动："),
@@ -156,9 +163,9 @@ class StunConnects(ft.Column):
                 alignment=ft.MainAxisAlignment.START),
             # 事件按钮 -----------------------------------------
             actions=[
-                ft.TextButton("保存",
-                              on_click=self.conf_changed),
-                ft.TextButton("取消",
+                # ft.TextButton("保存",
+                #               on_click=self.conf_changed),
+                ft.TextButton("OK",
                               on_click=lambda e:
                               self.page.close(self.dlg_conf))],
             actions_alignment=ft.MainAxisAlignment.END)
@@ -304,10 +311,10 @@ class StunConnects(ft.Column):
                                 icon=ft.Icons.LINK_ROUNDED, ),
                         ], ), ], ), ]
         self.create_flag = True
-        self.manage_dogs = TimeWatchers(
-            self.tasks.controls,
-            in_time=10,
-        )
+        # self.manage_dogs = TimeWatchers(
+        #     self.tasks.controls,
+        #     in_time=600,
+        # )
         # self.manage_dogs.start()
 
     # 新增项目 =============================================================
@@ -359,7 +366,7 @@ class StunConnects(ft.Column):
 
     # 全部删除 =============================================================
     def task_killall(self):
-        self.manage_dogs.flag = False
+        # self.manage_dogs.flag = False
         for task in self.tasks.controls:
             if task.map_open.value and task.ports is not None:
                 task.stop_mapping()

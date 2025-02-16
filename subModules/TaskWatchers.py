@@ -21,16 +21,20 @@ class taskWatchers(threading.Thread):
             0: "未知错误",
         }
         while self.flag:
-            time.sleep(0.1)
+            time.sleep(1)
             if self.main.ports is None:
                 return False
             if not self.main.ports.is_alive():
-                if self.main.ports.exitcode == 5:
+                print(self.main.ports.exitcode)
+                if self.main.ports.exitcode == 5 \
+                        or self.main.ports.exitcode == 0:
                     self.main.ports = PortForwards(
                         self.main.map_port_data,
                         "0.0.0.0",
                         proxy_type=self.main.map_type_data,
-                        proxy_urls=self.main.url_text_data)
+                        proxy_urls=self.main.url_text_data,
+                        in_dog_var=self.main.super.update_time
+                    )
                     self.main.ports.start()
                     continue
                 self.main.dlg_kill.content = ft.Text(

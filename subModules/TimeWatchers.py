@@ -26,7 +26,7 @@ class PortWatchers(threading.Thread):
                  in_logs=None):
         super().__init__()
         self.main = in_main
-        self.time = in_time
+        self.time = int(in_time)
         self.flag = True
         self.logs = in_logs
         self.last = time.time()
@@ -36,5 +36,5 @@ class PortWatchers(threading.Thread):
             if time.time() - self.last >= self.time:
                 self.main.set()
                 self.last = time.time()
-                self.logs("Update: Check URL Change")
+                self.logs("Update: Check URL Changes")
             time.sleep(1)
