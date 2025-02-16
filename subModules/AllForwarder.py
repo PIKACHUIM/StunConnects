@@ -94,7 +94,7 @@ class PortForwards(multiprocessing.Process):
                 retry = 10
                 while True:
                     if retry < 0:
-                        exit(4)
+                        sys.exit(4)
                     try:
                         response = requests.get(
                             proxy_urls, allow_redirects=False,
@@ -122,11 +122,11 @@ class PortForwards(multiprocessing.Process):
             except requests.RequestException as e:
                 self.logs(f"请求出错：{e}", LT, L.M)
                 self.text = "请求出错：" + str(e)
-                exit(1)
+                sys.exit(1)
             except (IndexError, ValueError, Exception) as e:
                 self.logs(f"解析出错：{e}", LT, L.M)
                 self.text = "解析出错：" + str(e)
-                exit(2)
+                sys.exit(2)
 
     async def start_tcp_proxy(self):
         LT = "start_tcp_ap"
@@ -134,7 +134,7 @@ class PortForwards(multiprocessing.Process):
         retry = 10
         while True:
             if retry < 0:
-                exit(5)
+                sys.exit(5)
             try:
                 self.logs("Listen: TCP %s:%s" % (
                     self.local_host, self.local_port
@@ -204,10 +204,10 @@ class PortForwards(multiprocessing.Process):
                     await target.drain()
             except Exception as e:
                 self.logs("Errors: %s" % str(e), LT, L.E)
-                exit(3)
+                sys.exit(3)
             finally:
                 target.close()
-                exit(4)
+                sys.exit(4)
 
         # 创建两个任务分别处理双向数据转发 ===========================
         task1 = asyncio.create_task(forward(reader, remote_writer))
