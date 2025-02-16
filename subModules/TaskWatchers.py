@@ -26,6 +26,8 @@ class taskWatchers(threading.Thread):
                 return False
             if not self.main.ports.is_alive():
                 print(self.main.ports.exitcode)
+                if self.main.ports.exitcode not in exit_text:
+                    return False
                 if self.main.ports.exitcode == 5 \
                         or self.main.ports.exitcode == 0:
                     self.main.ports = PortForwards(

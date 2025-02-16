@@ -3,10 +3,11 @@ import os
 import time
 from subModules.AllForwarder import PortForwards
 
-class StunServices():
-    def __init__(self):
+
+class StunServices:
+    def __init__(self, set_time=600):
         self.map_list = []
-        self.set_time = 600
+        self.set_time = set_time
 
     def run(self):
         self.open()
@@ -21,6 +22,7 @@ class StunServices():
                     self.set_time = conf_data["update_time"]
                 if "tasker_list" in conf_data:
                     for tasker_list in conf_data["tasker_list"]:
+                        print(tasker_list['url_text'])
                         self.map_list.append(
                             PortForwards(
                                 tasker_list['map_port'],

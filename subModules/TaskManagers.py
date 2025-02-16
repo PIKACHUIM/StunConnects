@@ -6,6 +6,7 @@ from subModules.AllForwarder import PortForwards
 from subModules.TaskWatchers import taskWatchers
 from subModules.LogRecorders import Log, LL as L
 
+
 class TaskManagers(ft.Column):
     def __init__(self,
                  url_text,
@@ -113,7 +114,7 @@ class TaskManagers(ft.Column):
             ft.Icons.ROUTER_ROUNDED,
             tooltip="复制局域网IP",
             on_click=lambda e: pyperclip.copy(
-                self.now_local + ":" +
+                str(self.now_local) + ":" +
                 str(self.map_port.value)),
             disabled=False,
         )
@@ -240,6 +241,16 @@ class TaskManagers(ft.Column):
     # 按钮 ####################################################################
     # 开始映射 ================================================================
     def open_mapping(self):
+        if self.super.server_flag:
+            server_flag = False
+            for argc in sys.argv:
+                if argc.find("flag-server") > 0:
+                    server_flag = True
+            if not server_flag:
+                self.print("Ignore: %s" % (
+                        self.url_text_data,
+                ), "open_mapping", L.G)
+                return True
         if self.ports is None and self.map_open.value:
             self.ports = PortForwards(
                 self.map_port_data,
