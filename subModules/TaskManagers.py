@@ -140,31 +140,31 @@ class TaskManagers(ft.Column):
                     self.map_name,
                     self.set_name,
                     self.url_text,
+                ]) if self.super.pages.platform == \
+                      ft.PagePlatform.ANDROID else
+            ft.Row(
+                controls=[
+                    self.map_name,
+                    self.set_name,
+                    self.url_text,
                     self.map_port,
                     self.map_type,
                     self.url_copy,
                     self.url_pubs,
                     self.map_kill,
                     self.map_open,
-                ] if not self.super.pages.platform == ft.PagePlatform.ANDROID else
-                [
-                    ft.Row(
-                        controls=[
-                            self.map_name,
-                            self.set_name,
-                            self.url_text,
-                        ]),
-                    ft.Row(
-                        controls=[
-                            self.map_port,
-                            self.map_type,
-                            self.url_copy,
-                            self.url_pubs,
-                            self.map_kill,
-                            self.map_open,
-                        ]),
-                ],
-            )
+                ]),
+            ft.Row(
+                controls=[
+                    self.map_port,
+                    self.map_type,
+                    self.url_copy,
+                    self.url_pubs,
+                    self.map_kill,
+                    self.map_open,
+                ]) if self.super.pages.platform == \
+                      ft.PagePlatform.ANDROID \
+                else ft.Container(),
         ]
         # 内置接口 ====================================
         self.item_checked()

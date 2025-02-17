@@ -295,22 +295,11 @@ class StunConnects(ft.Column):
                             theme_style=ft.TextThemeStyle.HEADLINE_MEDIUM)],
                 alignment=ft.MainAxisAlignment.CENTER, ),
             # 新增行 ==============================================================================
-            ft.Row(
-                controls=[
-                    ft.Row(controls=[
-                        self.map_name,
-                        self.url_text,
-                    ]),
-                    ft.Row(controls=[
-                        self.map_port,
-                        self.map_type,
-                        ft.FloatingActionButton(
-                            icon=ft.Icons.ADD,
-                            on_click=self.add_clicked),
-                    ]),
-                ],
-            ) if self.pages.platform == ft.PagePlatform.ANDROID else
-            ft.Row(
+
+            ft.Row(controls=[
+                self.map_name,
+                self.url_text,
+            ]) if self.pages.platform == ft.PagePlatform.ANDROID else ft.Row(
                 controls=[
                     self.map_name,
                     self.url_text,
@@ -320,6 +309,13 @@ class StunConnects(ft.Column):
                         icon=ft.Icons.ADD,
                         on_click=self.add_clicked), ],
             ),
+            ft.Row(controls=[
+                self.map_port,
+                self.map_type,
+                ft.FloatingActionButton(
+                    icon=ft.Icons.ADD,
+                    on_click=self.add_clicked),
+            ]) if self.pages.platform == ft.PagePlatform.ANDROID else ft.Container(),
             # 任务列表 ============================================================================
             ft.Column(
                 spacing=25, expand=True, controls=[
@@ -327,29 +323,27 @@ class StunConnects(ft.Column):
                     self.tasks,
                     ft.Container(expand=True),
                     ft.Row(
-                        alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
-                        vertical_alignment=ft.CrossAxisAlignment.CENTER,
                         controls=[
                             self.item_num, self.open_map,
                             self.demo_txt, self.demo_set,
-                            self.stop_map, self.kill_map,
+                            self.stop_map, self.kill_map
+                        ]) if self.pages.platform == ft.PagePlatform.ANDROID else \
+                        ft.Row(
+                            alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
+                            vertical_alignment=ft.CrossAxisAlignment.CENTER,
+                            controls=[
+                                self.item_num, self.open_map,
+                                self.demo_txt, self.demo_set,
+                                self.stop_map, self.kill_map,
+                                self.push_set, self.push_use,
+                                self.push_inf, self.push_url,
+                            ]),
+                    ft.Row(
+                        controls=[
                             self.push_set, self.push_use,
-                            self.push_inf, self.push_url,
-                        ] if not self.pages.platform == ft.PagePlatform.ANDROID else
-                        [
-                            ft.Row(
-                                controls=[
-                                    self.item_num, self.open_map,
-                                    self.demo_txt, self.demo_set,
-                                    self.stop_map, self.kill_map
-                                ]),
-                            ft.Row(
-                                controls=[
-                                    self.push_set, self.push_use,
-                                    self.push_inf, self.push_url
-                                ]),
-                        ],
-                    ), ], ), ]
+                            self.push_inf, self.push_url
+                        ]) if self.pages.platform == ft.PagePlatform.ANDROID else ft.Container(),
+                ], ), ]
         self.create_flag = True
         # self.manage_dogs = TimeWatchers(
         #     self.tasks.controls,
