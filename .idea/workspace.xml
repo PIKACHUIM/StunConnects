@@ -4,12 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8a77be09-fd61-4491-a931-3c7f8c806534" name="Changes" comment="StunConnects-v0.4b：&#10;1、支持了日志显示和查看&#10;2、修复了开机启动一些问题&#10;3、支持了自动更新端口&#10;4、修复了若干问题">
-      <change beforePath="$PROJECT_DIR$/StunConnects.py" beforeDir="false" afterPath="$PROJECT_DIR$/StunConnects.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/StunServices.py" beforeDir="false" afterPath="$PROJECT_DIR$/StunServices.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/appSources/svcon.exe" beforeDir="false" afterPath="$PROJECT_DIR$/appSources/svcon.exe" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/subModules/TaskManagers.py" beforeDir="false" afterPath="$PROJECT_DIR$/subModules/TaskManagers.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/subModules/TaskWatchers.py" beforeDir="false" afterPath="$PROJECT_DIR$/subModules/TaskWatchers.py" afterDir="false" />
+    <list default="true" id="2f23e495-f484-42ff-9a85-dae59a0d36d1" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/StunConnects.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/StunConnects.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -26,10 +23,16 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/../../Venvs/StunConnects/Lib/site-packages/flet/core/icons.py" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/../../Venvs/StunConnects/Lib/site-packages/flet/core/text.py" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/../../Venvs/StunConnects/Lib/site-packages/flet/core/textfield.py" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/../../Venvs/StunConnects/Lib/site-packages/pystray/_base.py" root0="SKIP_INSPECTION" />
+  </component>
   <component name="ProjectColorInfo">{
-  &quot;associatedIndex&quot;: 3
+  &quot;associatedIndex&quot;: 6
 }</component>
-  <component name="ProjectId" id="2stWg9fgtWs5i5xjfjWfxK5ukFl" />
+  <component name="ProjectId" id="2stDa0d3fUkPfT3AYqrO8vSqIFe" />
   <component name="ProjectLevelVcsManager">
     <ConfirmationsSetting value="2" id="Add" />
   </component>
@@ -41,199 +44,150 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
-    "Python.AllForwarder (1).executor": "Run",
-    "Python.AllForwarder.executor": "Run",
-    "Python.PortForwards.executor": "Run",
+    "Python.AllForwarder.executor": "Debug",
+    "Python.PortForwards.executor": "Debug",
     "Python.StunConnects.executor": "Run",
-    "Python.StunServices.executor": "Run",
-    "Python.TaskManagers.executor": "Run",
-    "Python.mapForwarder.executor": "Run",
+    "Python.TrayConnects.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "git-widget-placeholder": "main",
-    "last_opened_file_path": "D:/Codes/StunConnects/subModules",
-    "settings.editor.selected.configurable": "preferences.keymap"
+    "last_opened_file_path": "G:/Codes/StunConnects/i18nLanguage",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable",
+    "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="D:\Codes\StunConnects\subModules" />
-      <recent name="D:\Codes\StunConnects" />
-      <recent name="D:\Codes\StunConnects\portForwards" />
+      <recent name="G:\Codes\StunConnects\i18nLanguage" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="D:\Codes\StunConnects\subModules" />
-      <recent name="D:\Codes\StunConnects\appResources" />
-      <recent name="D:\Codes\StunConnects\portForwards" />
-      <recent name="D:\Codes\StunConnects" />
+      <recent name="G:\Codes\StunConnects" />
     </key>
-  </component>
-  <component name="RunManager" selected="Python.StunConnects">
-    <configuration name="AllForwarder" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="StunConnects" />
-      <option name="ENV_FILES" value="" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="D:\Codes\StunConnects\portForwards\AllForwarder.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="StunConnects" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="StunConnects" />
-      <option name="ENV_FILES" value="" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/StunConnects.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="StunServices" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="StunConnects" />
-      <option name="ENV_FILES" value="" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/StunServices.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <recent_temporary>
-      <list>
-        <item itemvalue="Python.StunConnects" />
-        <item itemvalue="Python.StunServices" />
-        <item itemvalue="Python.AllForwarder" />
-      </list>
-    </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-python-sdk-fb887030ada0-aa17d162503b-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-243.21565.199" />
+        <option value="bundled-js-predefined-d6986cc7102b-76f8388c3a79-JavaScript-PY-243.24978.54" />
+        <option value="bundled-python-sdk-91e3b7efe1d4-466328ff949b-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-243.24978.54" />
       </set>
     </attachedChunks>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="8a77be09-fd61-4491-a931-3c7f8c806534" name="Changes" comment="" />
-      <created>1739275459286</created>
+      <changelist id="2f23e495-f484-42ff-9a85-dae59a0d36d1" name="Changes" comment="" />
+      <created>1739266036895</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1739275459286</updated>
+      <updated>1739266036895</updated>
+      <workItem from="1739266038113" duration="74192000" />
+      <workItem from="1739758814526" duration="293000" />
+      <workItem from="1739759112303" duration="75000" />
     </task>
-    <task id="LOCAL-00001" summary="add ui">
+    <task id="LOCAL-00001" summary="add(Port forward)">
       <option name="closed" value="true" />
-      <created>1739343048398</created>
+      <created>1739269690198</created>
       <option name="number" value="00001" />
       <option name="presentableId" value="LOCAL-00001" />
       <option name="project" value="LOCAL" />
-      <updated>1739343048398</updated>
+      <updated>1739269690198</updated>
     </task>
-    <task id="LOCAL-00002" summary="add udp proxy">
+    <task id="LOCAL-00002" summary="add(Port forward)">
       <option name="closed" value="true" />
-      <created>1739380317057</created>
+      <created>1739358166814</created>
       <option name="number" value="00002" />
       <option name="presentableId" value="LOCAL-00002" />
       <option name="project" value="LOCAL" />
-      <updated>1739380317057</updated>
+      <updated>1739358166814</updated>
     </task>
-    <task id="LOCAL-00003" summary="add udp proxy">
+    <task id="LOCAL-00003" summary="add(UI)">
       <option name="closed" value="true" />
-      <created>1739381414154</created>
+      <created>1739358182763</created>
       <option name="number" value="00003" />
       <option name="presentableId" value="LOCAL-00003" />
       <option name="project" value="LOCAL" />
-      <updated>1739381414154</updated>
+      <updated>1739358182763</updated>
     </task>
-    <task id="LOCAL-00004" summary="add udp proxy">
+    <task id="LOCAL-00004" summary="add(UI)">
       <option name="closed" value="true" />
-      <created>1739381482023</created>
+      <created>1739358248680</created>
       <option name="number" value="00004" />
       <option name="presentableId" value="LOCAL-00004" />
       <option name="project" value="LOCAL" />
-      <updated>1739381482023</updated>
+      <updated>1739358248680</updated>
     </task>
-    <task id="LOCAL-00005" summary="fix watch dog">
+    <task id="LOCAL-00005" summary="v0.1 Basic Function Finish&#10;这是一个测试版本，还不稳定&#10;&#10;Finish Tasks:&#10;1、支持添加、删除、修改、映射内容&#10;2、支持TCP和UDP自动映射到远程端口&#10;&#10;Known Issues:&#10;1、备注信息无法正常获取和修改保存&#10;2、修改链接之后，端口无法重新监听&#10;&#10;Todo Feature:&#10;1、关于页面、批量启动、停止、删除&#10;2、设置页面：自动更新及时间值设定">
       <option name="closed" value="true" />
-      <created>1739718355460</created>
+      <created>1739441711744</created>
       <option name="number" value="00005" />
       <option name="presentableId" value="LOCAL-00005" />
       <option name="project" value="LOCAL" />
-      <updated>1739718355460</updated>
+      <updated>1739441711744</updated>
     </task>
-    <task id="LOCAL-00006" summary="StunConnects-v0.4b：&#10;1、支持了日志显示和查看&#10;2、修复了开机启动一些问题&#10;3、支持了自动更新端口&#10;4、修复了若干问题">
+    <task id="LOCAL-00006" summary="v0.1 Basic Function Finish&#10;这是一个测试版本，还不稳定&#10;&#10;Finish Tasks:&#10;1、支持添加、删除、修改、映射内容&#10;2、支持TCP和UDP自动映射到远程端口&#10;&#10;Known Issues:&#10;1、备注信息无法正常获取和修改保存&#10;2、修改链接之后，端口无法重新监听&#10;&#10;Todo Feature:&#10;1、关于页面、批量启动、停止、删除&#10;2、设置页面：自动更新及时间值设定">
       <option name="closed" value="true" />
-      <created>1739723498158</created>
+      <created>1739442566001</created>
       <option name="number" value="00006" />
       <option name="presentableId" value="LOCAL-00006" />
       <option name="project" value="LOCAL" />
-      <updated>1739723498158</updated>
+      <updated>1739442566001</updated>
     </task>
-    <task id="LOCAL-00007" summary="StunConnects-v0.4b：&#10;1、支持了日志显示和查看&#10;2、修复了开机启动一些问题&#10;3、支持了自动更新端口&#10;4、修复了若干问题">
+    <task id="LOCAL-00007" summary="v0.2 Basic Function Finish&#10;这是一个测试版本，还不稳定&#10;&#10;Finish Tasks:&#10;1、支持添加、删除、修改、映射内容&#10;2、支持TCP和UDP自动映射到远程端口&#10;&#10;Known Issues:&#10;1、备注信息无法正常获取和修改保存&#10;2、修改链接之后，端口无法重新监听&#10;&#10;Todo Feature:&#10;1、关于页面、批量启动、停止、删除&#10;2、设置页面：自动更新及时间值设定">
       <option name="closed" value="true" />
-      <created>1739723595458</created>
+      <created>1739448702938</created>
       <option name="number" value="00007" />
       <option name="presentableId" value="LOCAL-00007" />
       <option name="project" value="LOCAL" />
-      <updated>1739723595458</updated>
+      <updated>1739448702938</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="add 开机自启&#10;fix 海量bug">
+      <option name="closed" value="true" />
+      <created>1739512393510</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1739512393510</updated>
+    </task>
+    <task id="LOCAL-00009" summary="add 托盘功能&#10;add 隐藏启动">
+      <option name="closed" value="true" />
+      <created>1739527405607</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1739527405607</updated>
+    </task>
+    <task id="LOCAL-00010" summary="add 托盘功能&#10;add 隐藏启动">
+      <option name="closed" value="true" />
+      <created>1739541313996</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1739541313996</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
-  <component name="Vcs.Log.Tabs.Properties">
-    <option name="TAB_STATES">
-      <map>
-        <entry key="MAIN">
-          <value>
-            <State />
-          </value>
-        </entry>
-      </map>
-    </option>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="add ui" />
-    <MESSAGE value="add udp proxy" />
-    <MESSAGE value="fix watch dog" />
-    <MESSAGE value="StunConnects-v0.4b：&#10;1、支持了日志显示和查看&#10;2、修复了开机启动一些问题&#10;3、支持了自动更新端口&#10;4、修复了若干问题" />
-    <option name="LAST_COMMIT_MESSAGE" value="StunConnects-v0.4b：&#10;1、支持了日志显示和查看&#10;2、修复了开机启动一些问题&#10;3、支持了自动更新端口&#10;4、修复了若干问题" />
+    <MESSAGE value="add(Port forward)" />
+    <MESSAGE value="add(UI)" />
+    <MESSAGE value="v0.1 Basic Function Finish&#10;这是一个测试版本，还不稳定&#10;&#10;Finish Tasks:&#10;1、支持添加、删除、修改、映射内容&#10;2、支持TCP和UDP自动映射到远程端口&#10;&#10;Known Issues:&#10;1、备注信息无法正常获取和修改保存&#10;2、修改链接之后，端口无法重新监听&#10;&#10;Todo Feature:&#10;1、关于页面、批量启动、停止、删除&#10;2、设置页面：自动更新及时间值设定" />
+    <MESSAGE value="v0.2 Basic Function Finish&#10;这是一个测试版本，还不稳定&#10;&#10;Finish Tasks:&#10;1、支持添加、删除、修改、映射内容&#10;2、支持TCP和UDP自动映射到远程端口&#10;&#10;Known Issues:&#10;1、备注信息无法正常获取和修改保存&#10;2、修改链接之后，端口无法重新监听&#10;&#10;Todo Feature:&#10;1、关于页面、批量启动、停止、删除&#10;2、设置页面：自动更新及时间值设定" />
+    <MESSAGE value="add 开机自启&#10;fix 海量bug" />
+    <MESSAGE value="add 托盘功能&#10;add 隐藏启动" />
+    <option name="LAST_COMMIT_MESSAGE" value="add 托盘功能&#10;add 隐藏启动" />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/StunConnects$AllForwarder.coverage" NAME="AllForwarder Coverage Results" MODIFIED="1739445142455" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/portForwards" />
+    <SUITE FILE_PATH="coverage/StunConnects$PortForwards.coverage" NAME="PortForwards Coverage Results" MODIFIED="1739269274790" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/StunConnects$StunConnects.coverage" NAME="StunConnects Coverage Results" MODIFIED="1739526588108" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/StunConnects$TrayConnects.coverage" NAME="TrayConnects Coverage Results" MODIFIED="1739523731291" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
