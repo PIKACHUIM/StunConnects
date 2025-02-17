@@ -1,6 +1,6 @@
 [project]
 name = "StunConnects"
-version = "0.4 Beta"
+version = "0.5 Beta"
 description = "STUN 映射助手"
 readme = "README.md"
 requires-python = ">=3.9"

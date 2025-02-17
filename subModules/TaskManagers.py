@@ -1,5 +1,6 @@
 import os
 import sys
+import traceback
 
 import flet as ft
 from subModules.AllForwarder import PortForwards
@@ -252,6 +253,7 @@ class TaskManagers(ft.Column):
                 ), "open_mapping", L.G)
                 return True
         if self.ports is None and self.map_open.value:
+            self.print("Launch: %s" % self.url_text_data, "open_mapping", L.G)
             self.ports = PortForwards(
                 self.map_port_data,
                 "0.0.0.0",

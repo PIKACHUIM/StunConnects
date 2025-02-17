@@ -4,6 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
+<<<<<<< HEAD
     <list default="true" id="2f23e495-f484-42ff-9a85-dae59a0d36d1" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/StunConnects.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/StunConnects.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
@@ -145,6 +146,7 @@
       <option name="project" value="LOCAL" />
       <updated>1739448702938</updated>
     </task>
+<<<<<<< HEAD
     <task id="LOCAL-00008" summary="add 开机自启&#10;fix 海量bug">
       <option name="closed" value="true" />
       <created>1739512393510</created>
@@ -176,6 +178,7 @@
     <option name="version" value="3" />
   </component>
   <component name="VcsManagerConfiguration">
+<<<<<<< HEAD
     <MESSAGE value="add(Port forward)" />
     <MESSAGE value="add(UI)" />
     <MESSAGE value="v0.1 Basic Function Finish&#10;这是一个测试版本，还不稳定&#10;&#10;Finish Tasks:&#10;1、支持添加、删除、修改、映射内容&#10;2、支持TCP和UDP自动映射到远程端口&#10;&#10;Known Issues:&#10;1、备注信息无法正常获取和修改保存&#10;2、修改链接之后，端口无法重新监听&#10;&#10;Todo Feature:&#10;1、关于页面、批量启动、停止、删除&#10;2、设置页面：自动更新及时间值设定" />

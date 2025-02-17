@@ -1,9 +1,13 @@
+import inspect
 import random
 import shutil
 import socket
 import json
+import subprocess
 import sys
 import os
+import time
+
 import flet as ft
 import webbrowser
 import multiprocessing
@@ -35,7 +39,7 @@ class StunConnects(ft.Column):
         self.create_flag = False
         self.load_configs()
         self.get_local_ip()
-        self.stun = StunServices(self.update_time)
+        # self.stun = StunServices(self.update_time)
         # 新增组件 ============================================
         # 备注名称 --------------------------------------------
         self.map_name = ft.TextField(
@@ -81,7 +85,7 @@ class StunConnects(ft.Column):
             title=ft.Text("关于 STUN 映射助手"),
             content=ft.Column(controls=[ft.Text(
                 "------------------------------------------\n"
-                "         STUN 映射助手 v0.4 Beta          \n"
+                "         STUN 映射助手 v0.5 Beta          \n"
                 "             GPL-3.0 License              \n"
                 "            作者：Pikachu Ren             \n"
                 "------------------------------------------\n"
@@ -217,7 +221,8 @@ class StunConnects(ft.Column):
         # 服务 ================================================
         self.demo_run = ft.Switch(
             label=" 已启用",
-            on_change=None,
+            on_change=lambda e: self.flag_service(
+                e, f=self.demo_run.value),
             value=True,
         )
         self.demo_dlg = ft.AlertDialog(
@@ -452,6 +457,10 @@ class StunConnects(ft.Column):
             # 获取本机IP地址
             self.hosts = s.getsockname()[0]
             self.print("Client: LocalIP:" + self.hosts, LT, L.G)
+            stack = inspect.stack()
+            print("Current stack:")
+            for frame in stack:
+                print(f"  Function: {frame.function}, File: {frame.filename}, Line: {frame.lineno}")
             # 关闭套接字
             s.close()
         except OSError:
@@ -508,26 +517,25 @@ class StunConnects(ft.Column):
     # 自动启动 ================================================================
     def conf_startup(self, e, app_name="Stun Connect"):
         LT = "conf_startup"
-        try:
-            self.starts_flag = self.sys_auto.value
+        try:  # 控制启动状态 ==================================================
+            self.starts_flag = self.sys_auto.value  # 同步变量 ----------------
             self.sys_auto.label = "已启用" if self.server_flag else "已禁用"
-            if sys.platform.startswith('win32'):
+            if sys.platform.startswith('win32'):  # Windows系统 ---------------
                 import winreg
-                # 打开注册表项
+                # 打开注册表项 ------------------------------------------------
                 key = winreg.OpenKey(
                     winreg.HKEY_CURRENT_USER,
                     r"Software\Microsoft\Windows\CurrentVersion\Run",
                     0, winreg.KEY_SET_VALUE)
                 if self.sys_auto.value:
-                    try:
-                        winreg.DeleteValue(key, app_name)
-                    except (FileNotFoundError, Exception):
-                        pass
-                    winreg.SetValueEx(key, app_name, 0,
-                                      winreg.REG_SZ,
+                    try:  # 删除启动项 ----------------------------------------
+                        winreg.DeleteValue(key, app_name)  # 删除启动项 -------
+                    except (FileNotFoundError, Exception):  # 捕获异常 --------
+                        pass  # 不存在则忽略 ----------------------------------
+                    winreg.SetValueEx(key, app_name, 0, winreg.REG_SZ,
                                       sys.executable + " --hide-window")
                     self.print(f"添加启动：{sys.executable}", LT, L.G)
-                else:
+                else:  # 删除启动项 -------------------------------------------
                     winreg.DeleteValue(key, app_name)
                     self.print(f"移除启动：{sys.executable}", LT, L.G)
                 winreg.CloseKey(key)
@@ -539,38 +547,61 @@ class StunConnects(ft.Column):
         except Exception as e:
             self.print(f"发生错误：{e}", LT, L.E_)
 
+    # 服务设置 ================================================================
     def flag_service(self, e=None, f=None):
-        nssm_path = FindResource.get("appSources/svcon.exe")
         if f is None:
             f = self.sys_demo.value
         if f:
-            os.system(nssm_path + " start StunConnects")
+            self.nssm_control("start StunConnects")
         else:
-            os.system(nssm_path + " stop StunConnects")
+            self.nssm_control("stop StunConnects")
 
+    # 服务重启 ================================================================
     def load_service(self, e=None):
         self.flag_service(f=False)
+        time.sleep(5)
         self.flag_service(f=True)
+
+    # 服务控制 ================================================================
+    def nssm_control(self, action, nssm_path=None):
+        LT = "nssm_control"
+        self.print("Server: " + action, LT, L.G)
+        if nssm_path is None:
+            nssm_path = FindResource.get("appSources/tools.exe")
+        nssm_data = subprocess.run(nssm_path + " " + action,
+                                   shell=True, capture_output=True)
+        nssm_text = (nssm_data.stdout + nssm_data.stderr).decode("utf-16")
+        nssm_text = nssm_text.replace("\n", "").replace("\r", "")
+        self.print("Result: " + nssm_text, LT, L.M)
 
     # 服务安装 ================================================================
     def conf_service(self, e=None):
         LT = "conf_service"
         self.server_flag = self.sys_demo.value
         self.save_configs()
-        # 获取路径 =============================================
+        # 获取路径 ==============================================
         data_path = os.environ.get('APPDATA')
-        nssm_path = FindResource.get("appSources/svcon.exe")
-        if self.server_flag:  # 设置服务 =======================
+        nssm_path = FindResource.get("appSources/tools.exe")
+        if self.server_flag:  # 设置服务 ========================
             try:
                 shutil.copy(nssm_path, data_path)
-                nssm_path = os.path.join(data_path, "svcon.exe")
+                nssm_path = os.path.join(data_path, "tools.exe")
             except (FileNotFoundError, Exception) as err:
                 self.print("创建服务失败: " + str(err), LT, L.W_)
-            os.system("%s install StunConnects \"%s\"" % (
-                nssm_path, os.getcwd() + "/StunConnects.exe"))
-            os.system(nssm_path + " set StunConnects AppDirectory \"%s\"" % os.getcwd())
-            os.system(nssm_path + " set StunConnects AppParameters \"--flag-server\"")
-            os.system(nssm_path + " start StunConnects")
+            # 设置环境变量 ======================================
+            start_cmd = os.getcwd() + "/StunConnects.exe"
+            setup_cmd = "install StunConnects \"%s\"" % start_cmd
+            setup_dir = "AppDirectory \"%s\"" % os.getcwd()
+            setup_dir = "set StunConnects %s" % setup_dir
+            setup_app = "AppParameters \"--flag-server\""
+            setup_app = "set StunConnects %s" % setup_app
+            start_app = "start StunConnects"
+            # 设置服务 ==========================================
+            self.nssm_control(setup_cmd, nssm_path)
+            self.nssm_control(setup_dir, nssm_path)
+            self.nssm_control(setup_app, nssm_path)
+            self.nssm_control(start_app, nssm_path)
+            # 设置界面 ==========================================
             self.sys_auto.value = False
             self.sys_demo.label = "已启用"
             self.open_map.visible = False
@@ -578,31 +609,35 @@ class StunConnects(ft.Column):
             self.kill_map.visible = False
             self.demo_set.visible = True
             self.demo_txt.visible = True
+            # 设置任务 ==========================================
             if self.starts_flag:
                 self.conf_startup(None)
             for task_now in self.tasks.controls:
                 if task_now.ports is not None:
-                    task_now.ports.kill()
-            self.update()
-        else:  # 删除服务 ===================================
-            os.system(nssm_path + " stop StunConnects")
-            os.system(nssm_path + " remove StunConnects confirm")
+                    task_now.stop_mapping()
+        else:  # 删除服务 =======================================
+            setup_app = "remove StunConnects confirm"
+            self.nssm_control("stop StunConnects", nssm_path)
+            self.nssm_control(setup_app, nssm_path)
+            # 设置界面 ==========================================
             self.sys_demo.label = "已禁用"
             self.open_map.visible = True
             self.stop_map.visible = True
             self.kill_map.visible = True
             self.demo_set.visible = False
             self.demo_txt.visible = False
+            # 设置任务 ==========================================
             for task_now in self.tasks.controls:
                 if task_now.ports is not None:
                     task_now.open_mapping()
-            self.update()
+        # 保存设置 ==============================================
+        self.update()
 
 
 # 主渲染函数 ###################################################################
 def main(page: ft.Page):
     # tray = None
-    page.title = "STUN 映射助手 v0.4 Beta"
+    page.title = "STUN 映射助手 v0.5 Beta"
     page.fonts = {"MapleMono": FindResource.get("appSources/fonts.ttf")}
     page.theme = ft.Theme(font_family="MapleMono")
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
@@ -613,7 +648,6 @@ def main(page: ft.Page):
     page.window.width = 750
     page.window.opacity = 0.95
     page.window.center()
-    server_flag = False
     # 处理参数 =============================================
     for argc in sys.argv:
         if argc.find("hide-window") >= 0:
@@ -623,17 +657,17 @@ def main(page: ft.Page):
                 page.window_hidden = True
                 page.window.skip_task_bar = True
                 page.window.minimized = True
-        if argc.find("flag-server") >= 0:
-            server_flag = True
-        if server_flag:
-            print("flag-server")
-            page.window.always_on_top = False
-            page.window_hidden = True
-            page.window.skip_task_bar = True
-            page.window.minimized = True
-            view.server_flag = True
-            view.stun.run()
-            sys.exit(0)
+        # if argc.find("flag-server") >= 0:
+        #     server_flag = True
+        # if server_flag:
+        #     print("flag-server")
+        #     page.window.always_on_top = False
+        #     page.window_hidden = True
+        #     page.window.skip_task_bar = True
+        #     page.window.minimized = True
+        #     view.server_flag = True
+        #     # view.stun.run()
+        #     sys.exit(0)
 
     # 打开窗口 ============================================
     def full_windows(e=None):
@@ -677,4 +711,15 @@ def main(page: ft.Page):
 
 if __name__ == "__main__":
     multiprocessing.freeze_support()
-    ft.app(main)
+    if sys.platform.startswith('win32'):
+        r = FindResource.get("appSources/Ansis/ansicon.exe")
+        # os.system(r + " -i")
+    server_flag = False
+    for text in sys.argv:
+        if text.find("flag-server") >= 0:
+            server_flag = True
+    if not server_flag:
+        ft.app(main)
+    else:
+        stun = StunServices()
+        stun.run()
