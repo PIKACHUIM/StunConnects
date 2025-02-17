@@ -20,7 +20,7 @@ from subModules.LogRecorders import Log, LL as L
 
 class StunConnects(ft.Column):
     # 软件UI ############################################################################
-    def __init__(self):
+    def __init__(self, page):
         super().__init__()
         # 全局设置 ============================================
         self.dialog = None
@@ -30,7 +30,7 @@ class StunConnects(ft.Column):
         self.print = Log("StunConnects",
                          "StunConnects",
                          "InitClassObj").log
-
+        self.pages = page
         # 全局设置 ============================================
         self.update_time = 600
         self.server_flag = False
@@ -268,6 +268,24 @@ class StunConnects(ft.Column):
         ) if sys.platform.startswith('win32') else ft.Container()
         # 底部 --------------------------------------------
         self.item_num = ft.Text("0个已选中")
+        self.push_set = ft.Button(
+            text="设置",
+            on_click=lambda e: self.page.open(self.dlg_conf),
+            icon=ft.Icons.SETTINGS_ROUNDED, ),
+        self.push_use = ft.Button(
+            text="教程",
+            on_click=lambda e: webbrowser.open(
+                "https://github.com/PIKACHUIM/StunConnects/blob/main/USAGES.MD"),
+            icon=ft.Icons.BOOK_ROUNDED, )
+        self.push_inf = ft.Button(
+            text="关于",
+            on_click=lambda e: self.page.open(self.dlg_info),
+            icon=ft.Icons.INFO_ROUNDED, )
+        self.push_url = ft.Button(
+            text="Github",
+            on_click=lambda e: webbrowser.open(
+                "https://github.com/PIKACHUIM/StunConnects"),
+            icon=ft.Icons.LINK_ROUNDED, )
         # UI设置 ##################################################################################
         self.controls = [
             # 标题行 ==============================================================================
@@ -277,6 +295,21 @@ class StunConnects(ft.Column):
                             theme_style=ft.TextThemeStyle.HEADLINE_MEDIUM)],
                 alignment=ft.MainAxisAlignment.CENTER, ),
             # 新增行 ==============================================================================
+            ft.Row(
+                controls=[
+                    ft.Row(controls=[
+                        self.map_name,
+                        self.url_text,
+                    ]),
+                    ft.Row(controls=[
+                        self.map_port,
+                        self.map_type,
+                        ft.FloatingActionButton(
+                            icon=ft.Icons.ADD,
+                            on_click=self.add_clicked),
+                    ]),
+                ],
+            ) if self.pages.platform == ft.PagePlatform.ANDROID else
             ft.Row(
                 controls=[
                     self.map_name,
@@ -300,25 +333,23 @@ class StunConnects(ft.Column):
                             self.item_num, self.open_map,
                             self.demo_txt, self.demo_set,
                             self.stop_map, self.kill_map,
-                            ft.Button(
-                                text="设置",
-                                on_click=lambda e: self.page.open(self.dlg_conf),
-                                icon=ft.Icons.SETTINGS_ROUNDED, ),
-                            ft.Button(
-                                text="教程",
-                                on_click=lambda e: webbrowser.open(
-                                    "https://github.com/PIKACHUIM/StunConnects/blob/main/USAGES.MD"),
-                                icon=ft.Icons.BOOK_ROUNDED, ),
-                            ft.Button(
-                                text="关于",
-                                on_click=lambda e: self.page.open(self.dlg_info),
-                                icon=ft.Icons.INFO_ROUNDED, ),
-                            ft.Button(
-                                text="Github",
-                                on_click=lambda e: webbrowser.open(
-                                    "https://github.com/PIKACHUIM/StunConnects"),
-                                icon=ft.Icons.LINK_ROUNDED, ),
-                        ], ), ], ), ]
+                            self.push_set, self.push_use,
+                            self.push_inf, self.push_url,
+                        ] if not self.pages.platform == ft.PagePlatform.ANDROID else
+                        [
+                            ft.Row(
+                                controls=[
+                                    self.item_num, self.open_map,
+                                    self.demo_txt, self.demo_set,
+                                    self.stop_map, self.kill_map
+                                ]),
+                            ft.Row(
+                                controls=[
+                                    self.push_set, self.push_use,
+                                    self.push_inf, self.push_url
+                                ]),
+                        ],
+                    ), ], ), ]
         self.create_flag = True
         # self.manage_dogs = TimeWatchers(
         #     self.tasks.controls,
@@ -641,7 +672,7 @@ def main(page: ft.Page):
     page.theme = ft.Theme(font_family="MapleMono")
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
     page.scroll = ft.ScrollMode.ADAPTIVE
-    view = StunConnects()
+    view = StunConnects(page)
     page.window.prevent_close = True
     page.window.height = 750
     page.window.width = 750
