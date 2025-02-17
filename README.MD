@@ -63,4 +63,4 @@ StunConnects.exe --flag-server
 ```
 
 ## 使用方法
-详见：[使用方法](https://github.com/PIKACHUIM/StunConnects/blob/main/USAGES.MD)
+详见：[使用方法](pikachuim.github.io/StunConnects/https://pikachuim.github.io/StunConnects/usage.html)
