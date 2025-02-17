@@ -116,7 +116,9 @@ class TaskManagers(ft.Column):
             tooltip="复制局域网IP",
             on_click=lambda e: pyperclip.copy(
                 str(self.now_local) + ":" +
-                str(self.map_port.value)),
+                str(self.map_port.value)) \
+                if sys.platform.startswith('win32') \
+                else None,
             disabled=False,
         )
         # 输出错误 ===================================
@@ -249,7 +251,7 @@ class TaskManagers(ft.Column):
                     server_flag = True
             if not server_flag:
                 self.print("Ignore: %s" % (
-                        self.url_text_data,
+                    self.url_text_data,
                 ), "open_mapping", L.G)
                 return True
         if self.ports is None and self.map_open.value:
