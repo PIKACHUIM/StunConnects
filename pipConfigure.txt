@@ -2,6 +2,7 @@ requests
 flet
 flet-desktop
 flet-cli
+flet-web
 pystray
 pillow
 pyperclip
