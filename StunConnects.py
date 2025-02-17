@@ -13,7 +13,6 @@ import webbrowser
 import multiprocessing
 
 from StunServices import StunServices
-from subModules.TrayConnects import TrayConnects
 from subModules.FindResource import FindResource
 from subModules.TaskManagers import TaskManagers
 from subModules.LogRecorders import Log, LL as L
@@ -696,6 +695,7 @@ def main(page: ft.Page):
 
     # 设置托盘 ============================================
     if sys.platform.startswith('win32'):
+        from subModules.TrayConnects import TrayConnects
         tray = TrayConnects(
             full_windows,
             exit_windows,
