@@ -271,7 +271,7 @@ class StunConnects(ft.Column):
         self.push_set = ft.Button(
             text="设置",
             on_click=lambda e: self.page.open(self.dlg_conf),
-            icon=ft.Icons.SETTINGS_ROUNDED, ),
+            icon=ft.Icons.SETTINGS_ROUNDED, )
         self.push_use = ft.Button(
             text="教程",
             on_click=lambda e: webbrowser.open(

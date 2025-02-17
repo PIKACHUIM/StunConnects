@@ -146,7 +146,7 @@ class TaskManagers(ft.Column):
                     self.url_pubs,
                     self.map_kill,
                     self.map_open,
-                ] if self.super.pages.platform == ft.PagePlatform.ANDROID else
+                ] if not self.super.pages.platform == ft.PagePlatform.ANDROID else
                 [
                     ft.Row(
                         controls=[
