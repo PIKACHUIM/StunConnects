@@ -4,13 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8a77be09-fd61-4491-a931-3c7f8c806534" name="Changes" comment="StunConnects-v0.4b：&#10;1、支持了日志显示和查看&#10;2、修复了开机启动一些问题&#10;3、支持了自动更新端口&#10;4、修复了若干问题">
-      <change beforePath="$PROJECT_DIR$/StunConnects.py" beforeDir="false" afterPath="$PROJECT_DIR$/StunConnects.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/StunServices.py" beforeDir="false" afterPath="$PROJECT_DIR$/StunServices.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/appSources/svcon.exe" beforeDir="false" afterPath="$PROJECT_DIR$/appSources/svcon.exe" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/subModules/TaskManagers.py" beforeDir="false" afterPath="$PROJECT_DIR$/subModules/TaskManagers.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/subModules/TaskWatchers.py" beforeDir="false" afterPath="$PROJECT_DIR$/subModules/TaskWatchers.py" afterDir="false" />
-    </list>
+    <list default="true" id="8a77be09-fd61-4491-a931-3c7f8c806534" name="Changes" comment="StunConnects-v0.5b：&#10;1、支持了服务模式运行" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -215,7 +209,23 @@
       <option name="project" value="LOCAL" />
       <updated>1739723595458</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="StunConnects-v0.5b：&#10;1、支持了服务模式运行">
+      <option name="closed" value="true" />
+      <created>1739727900756</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1739727900756</updated>
+    </task>
+    <task id="LOCAL-00009" summary="StunConnects-v0.5b：&#10;1、支持了服务模式运行">
+      <option name="closed" value="true" />
+      <created>1739727905995</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1739727905995</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -234,6 +244,7 @@
     <MESSAGE value="add udp proxy" />
     <MESSAGE value="fix watch dog" />
     <MESSAGE value="StunConnects-v0.4b：&#10;1、支持了日志显示和查看&#10;2、修复了开机启动一些问题&#10;3、支持了自动更新端口&#10;4、修复了若干问题" />
-    <option name="LAST_COMMIT_MESSAGE" value="StunConnects-v0.4b：&#10;1、支持了日志显示和查看&#10;2、修复了开机启动一些问题&#10;3、支持了自动更新端口&#10;4、修复了若干问题" />
+    <MESSAGE value="StunConnects-v0.5b：&#10;1、支持了服务模式运行" />
+    <option name="LAST_COMMIT_MESSAGE" value="StunConnects-v0.5b：&#10;1、支持了服务模式运行" />
   </component>
 </project>
