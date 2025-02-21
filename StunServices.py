@@ -17,9 +17,9 @@ class StunServices(threading.Thread):
         self.put_time = time.time()
         self.set_time = set_time
         self.api_logs = Log(
-            "StunServices",
-            "StunServices",
-            "StunServices"
+            "StunConnects",
+            "StunConnects",
+            "StunConnects"
         ).log
         # 启动线程 ===================
         self.start()
@@ -77,7 +77,11 @@ class StunServices(threading.Thread):
             elif int(old_task.local_port) != int(task_dict['map_port']) \
                     or old_task.proxy_urls != url_text \
                     or old_task.time != self.set_time \
-                    or old_task.proxy_type != task_dict['map_type'] :
+                    or old_task.proxy_type != task_dict['map_type']:
+                # print(int(old_task.local_port) != int(task_dict['map_port']))
+                # print(old_task.proxy_urls != url_text)
+                # print(old_task.time != self.set_time, old_task.time, self.set_time)
+                # print(old_task.proxy_type != task_dict['map_type'])
                 self.api_logs("任务变更: " + url_text)
                 # traceback.print_stack(sys._getframe())
                 old_task.kill()
@@ -97,7 +101,9 @@ class StunServices(threading.Thread):
             "0.0.0.0",
             proxy_type=task_dict['map_type'],
             proxy_urls=url_text,
-            server_tip="StunConnects")
+            server_tip="StunConnects",
+            in_dog_var = self.set_time
+        )
         self.map_list[url_text] = map_task
         map_task.start()
 

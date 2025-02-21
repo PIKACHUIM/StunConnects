@@ -276,7 +276,7 @@ class TaskManagers(ft.Column):
                 proxy_type=self.map_type_data,
                 proxy_urls=self.url_text_data,
                 in_dog_var=self.super.update_time,
-                server_tip="StunConnects"
+                server_tip="StunConnects",
             )
             self.ports.start()
             self.watch = taskWatchers(self)

@@ -67,6 +67,8 @@ class StunDesktops(ft.Column):
         self.dlg_conf = None
         self.map_port = None
         self.map_type = None
+        self.log_text = None
+        self.log_info = None
         # 设置控件 =========================
         StunAddonsUI.set_ui(self)  # 添加GUI
         StunConfigUI.set_ui(self)  # 配置GUI
@@ -75,6 +77,23 @@ class StunDesktops(ft.Column):
         self.create_flag = True  # 初始化-OK
 
     # 事件函数 #############################################################
+    # 清空日志 =============================================================
+    def kill_log_dlg(self, e=None):
+        log_file = "StunConnects.log"
+        with open(log_file, "w") as log_file:
+            self.page.close(self.log_info)
+        self.open_log_dlg()
+
+    # 查看日志 =============================================================
+    def open_log_dlg(self, e=None):
+        log_file = "StunConnects.log"
+        if not os.path.exists(log_file):
+            return None
+        with open(log_file, "r") as log_file:
+            self.log_text.value = log_file.read()
+        self.page.close(self.dlg_conf)
+        self.update()
+        self.page.open(self.log_info)
 
     # 全部开始 =============================================================
     def open_all_map(self, e=None):

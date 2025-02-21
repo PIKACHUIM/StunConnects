@@ -55,20 +55,38 @@ class StunAddonsUI:
                 "\n"
                 "这是免费的软件，但你可以打赏作者一瓶番茄酱\n"
             ), ft.Image(
-                src=FindResource.get("appSources/paids.jpg"),
-                width=360, height=250)
-            ]), actions=[
+                src=FindResource.get("appSources/paids.jpg",
+                                     self.server_flag),
+                width=360 if not self.server_flag else 540,
+                height=250 if not self.server_flag else 400,
+            )
+            ], alignment=ft.alignment.center), actions=[
                 ft.TextButton(
                     "OK",
                     on_click=lambda e:
                     self.page.close(
                         self.dlg_info))],
         )
-        self.log_text = ft.Text()
+        self.log_text = ft.TextField(
+            label="日志为空",
+            multiline=True,  # 多行模式
+            read_only=True,  # 禁止编辑
+            value="",
+            expand=True,
+            # width=400,  # 设置宽度
+            # height=300  # 设置高度
+        )
         self.log_info = ft.AlertDialog(
             title=ft.Text("运行日志"),
             content=self.log_text,
             actions=[
-                ft.TextButton("OK", on_click=lambda e:
-                self.page.close(self.log_info))],
+                ft.Row(
+                    controls=[
+                        ft.TextButton("清空日志", on_click=self.kill_log_dlg),
+                        ft.TextButton("OK", on_click=lambda e: self.page.close(self.log_info))
+                    ],
+                    alignment=ft.MainAxisAlignment.SPACE_BETWEEN  # 按钮对齐到两端
+                )
+            ],
+            actions_alignment=ft.MainAxisAlignment.SPACE_BETWEEN
         )

@@ -12,15 +12,13 @@ from multiprocessing import Process, Manager
 # 主渲染函数 ###################################################################
 def main(page: ft.Page):
     page.title = "STUN 映射助手 v0.5 Beta"
-    file_fonts = FindResource.get("appSources/fonts.ttf")
+    file_fonts = FindResource.get("appSources/fonts.ttf", server_flag)
     page.fonts = {"MapleMono": file_fonts}
     page.theme = ft.Theme(font_family="MapleMono")
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
     page.scroll = ft.ScrollMode.ADAPTIVE
     view = StunDesktops(page, server_flag, server)
     view.load_configs()  # 加载.Conf文件
-    # if view.server_flag:
-    #     view.save_configs()
     page.window.prevent_close = True
     page.window.height = 750
     page.window.width = 750

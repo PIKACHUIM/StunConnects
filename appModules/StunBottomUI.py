@@ -41,6 +41,7 @@ class StunBottomUI:
             on_change=lambda e: self.flag_service(
                 e, f=self.demo_run.value),
             value=True,
+            disabled=self.server_flag,
         )
         self.demo_dlg = ft.AlertDialog(
             title=ft.Text("服务状态"),
@@ -85,7 +86,8 @@ class StunBottomUI:
         self.demo_set = ft.Button(
             text="应用更改",
             icon=ft.Icons.RESTART_ALT_ROUNDED,
-            visible=self.server_flag,
+            # visible=self.server_flag and not self.pages.platform == "web",
+            visible=False,
             on_click=self.save_configs,
         ) if sys.platform.startswith('win32') else ft.Container()
         # 底部 --------------------------------------------

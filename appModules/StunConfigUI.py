@@ -55,12 +55,9 @@ class StunConfigUI:
                 ft.Row(controls=[
                     ft.Text("查看运行日志："),
                     ft.Button(
-                        text=" 查看日志",
+                        text="查看日志",
                         icon=ft.Icons.LOGO_DEV_ROUNDED,
-                        # on_click=lambda e: os.system(
-                        #     "explorer.exe " +
-                        #     "StunConnects.log"),
-                        on_click=lambda e: self.page.open(self.log_info),
+                        on_click=self.open_log_dlg,
                     )],
                     alignment=ft.MainAxisAlignment.START),
                 # 服务安装 -------------------------------------
