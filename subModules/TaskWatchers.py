@@ -35,7 +35,8 @@ class taskWatchers(threading.Thread):
                         "0.0.0.0",
                         proxy_type=self.main.map_type_data,
                         proxy_urls=self.main.url_text_data,
-                        in_dog_var=self.main.super.update_time
+                        in_dog_var=self.main.super.update_time,
+                        server_tip="StunConnects"
                     )
                     self.main.ports.start()
                     continue

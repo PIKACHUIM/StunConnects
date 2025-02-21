@@ -18,7 +18,8 @@ class PortForwards(multiprocessing.Process):
                  proxy_type: str = "TCP",
                  proxy_urls: str = None,
                  in_log_api=None,
-                 in_dog_var=600):
+                 in_dog_var=600,
+                 server_tip="StunConnects"):
         super().__init__()
         self.proxy_port = str(proxy_port)
         self.proxy_host = str(proxy_host)
@@ -36,9 +37,9 @@ class PortForwards(multiprocessing.Process):
         self.text = None  # 任务执行标记
         if self.logs is None:
             self.logs = Log(
-                "PortForwards",
-                "PortForwards",
-                "PortForwards"
+                server_tip,
+                server_tip,
+                server_tip
             ).log
         self.dogs = None
 
@@ -90,7 +91,7 @@ class PortForwards(multiprocessing.Process):
         LT = "get_url_text"
         if proxy_urls is not None:
             try:
-                self.logs("Server: %s" % proxy_urls, LT, L.M)
+                self.logs("解析地址: %s" % proxy_urls, LT, L.M)
                 retry = 10
                 while True:
                     if retry < 0:
@@ -111,10 +112,10 @@ class PortForwards(multiprocessing.Process):
                     location = response.text
                 location = location.split("://")[1].split("/")[0]
                 local_ap = self.proxy_host + ":" + self.proxy_port
-                self.logs("Remote: %s %s" % (
+                self.logs("远程端口: %s %s" % (
                     str(response.status_code), location), LT, L.M)
                 if len(local_ap) > 5:
-                    self.logs("Locals: %s %s" % (
+                    self.logs("本地端口: %s %s" % (
                         str(response.status_code), local_ap), LT, L.M)
                 self.proxy_host = location.split(":")[0]
                 self.proxy_port = location.split(":")[1]
@@ -125,6 +126,7 @@ class PortForwards(multiprocessing.Process):
                 sys.exit(1)
             except (IndexError, ValueError, Exception) as e:
                 self.logs(f"解析出错：{e}", LT, L.M)
+                self.logs(f"解析出错：{response.text}", LT, L.M)
                 self.text = "解析出错：" + str(e)
                 sys.exit(2)
 
@@ -136,7 +138,7 @@ class PortForwards(multiprocessing.Process):
             if retry < 0:
                 sys.exit(5)
             try:
-                self.logs("Listen: TCP %s:%s" % (
+                self.logs("监听端口: TCP %s:%s" % (
                     self.local_host, self.local_port
                 ), LT, L.S)
                 self.server_tcp = await asyncio.start_server(
@@ -158,7 +160,7 @@ class PortForwards(multiprocessing.Process):
             if retry < 0:
                 exit(5)
             try:
-                self.logs("Listen: UDP %s:%s" % (
+                self.logs("监听端口: UDP %s:%s" % (
                     self.local_host, self.local_port
                 ), LT, L.S)
                 self.server_udp, _ = await loop.create_datagram_endpoint(
@@ -189,31 +191,35 @@ class PortForwards(multiprocessing.Process):
     # TCP4连接 #######################################################
     async def _tcp(self, reader, writer):
         LT = "proxy_tcp_ap"
-        # 处理客户端连接，将数据转发到远程服务器 =====================
-        remote_reader, remote_writer = await asyncio.open_connection(
-            self.proxy_host, self.proxy_port)
+        try:
+            # 处理客户端连接，将数据转发到远程服务器 =====================
+            remote_reader, remote_writer = await asyncio.open_connection(
+                self.proxy_host, self.proxy_port)
 
-        # 处理数据流转发 =============================================
-        async def forward(source, target):
-            try:  # 将数据从一个流转发到另一个流 ---------------------
-                while self.flag:
-                    data = await source.read(4096)
-                    if not data:
-                        break
-                    target.write(data)
-                    await target.drain()
-            except Exception as e:
-                self.logs("Errors: %s" % str(e), LT, L.E)
-                sys.exit(3)
-            finally:
-                target.close()
-                sys.exit(4)
+            # 处理数据流转发 =============================================
+            async def forward(source, target):
+                try:  # 将数据从一个流转发到另一个流 ---------------------
+                    while self.flag:
+                        data = await source.read(4096)
+                        if not data:
+                            break
+                        target.write(data)
+                        await target.drain()
+                except Exception as e:
+                    self.logs("Errors: %s" % str(e), LT, L.E)
+                    sys.exit(3)
+                finally:
+                    target.close()
+                    sys.exit(4)
 
-        # 创建两个任务分别处理双向数据转发 ===========================
-        task1 = asyncio.create_task(forward(reader, remote_writer))
-        task2 = asyncio.create_task(forward(remote_reader, writer))
-        # 等待两个任务完成 ===========================================
-        await asyncio.gather(task1, task2)
+            # 创建两个任务分别处理双向数据转发 ===========================
+            task1 = asyncio.create_task(forward(reader, remote_writer))
+            task2 = asyncio.create_task(forward(remote_reader, writer))
+            # 等待两个任务完成 ===========================================
+            await asyncio.gather(task1, task2)
+        except (OSError, Exception) as e:
+            self.logs("Errors：TCP " + str(e), LT, L.W)
+            exit(5)
 
 
 if __name__ == "__main__":

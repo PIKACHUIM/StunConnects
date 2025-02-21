@@ -16,4 +16,4 @@ RUN  pip install -r   /app/pipConfigure.txt
 WORKDIR /app
 
 # 启动 Flet 应用
-CMD ["flet", "run", "--web", "--port", "1680", "StunConnects.py"]
+CMD ["python", "--flag-server", "StunConnects.py"]

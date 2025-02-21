@@ -16,6 +16,7 @@ class TaskManagers(ft.Column):
                  map_type,
                  in_super=None,
                  is_start=True,
+                 now_open=True,
                  ):
         super().__init__()
         # 关键数据 ==================================
@@ -168,7 +169,8 @@ class TaskManagers(ft.Column):
         ]
         # 内置接口 ====================================
         self.item_checked()
-        self.open_mapping()
+        if now_open:
+            self.open_mapping()
 
     # 切换 ####################################################################
     def open_clicked(self, e, action=True):
@@ -261,16 +263,11 @@ class TaskManagers(ft.Column):
     # 按钮 ####################################################################
     # 开始映射 ================================================================
     def open_mapping(self):
+        # print("open_mapping", self.super.server_flag, self.super.server_data)
+        # traceback.print_stack(sys._getframe())
         if self.super.server_flag:
-            server_flag = False
-            for argc in sys.argv:
-                if argc.find("flag-server") > 0:
-                    server_flag = True
-            if not server_flag:
-                self.print("Ignore: %s" % (
-                    self.url_text_data,
-                ), "open_mapping", L.G)
-                return True
+            self.print("忽略映射: %s" % (self.url_text_data,), "open_mapping")
+            return True
         if self.ports is None and self.map_open.value:
             self.print("Launch: %s" % self.url_text_data, "open_mapping", L.G)
             self.ports = PortForwards(
@@ -278,7 +275,8 @@ class TaskManagers(ft.Column):
                 "0.0.0.0",
                 proxy_type=self.map_type_data,
                 proxy_urls=self.url_text_data,
-                in_dog_var=self.super.update_time
+                in_dog_var=self.super.update_time,
+                server_tip="StunConnects"
             )
             self.ports.start()
             self.watch = taskWatchers(self)

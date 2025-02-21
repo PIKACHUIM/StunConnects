@@ -46,11 +46,11 @@ class UdpForwarder:
     # 遇到错误时 #####################################################################
     def error_received(self, exc):
         LT = "error_happen"
-        self.logs("Errors: Error in UDP forward: %s" % str(exc), LT, L.E_)
+        self.logs("转发错误: Error in UDP forward: %s" % str(exc), LT, L.E_)
         # exit(3)
 
     # 连接丢失时 #####################################################################
     def connection_lost(self, exc):
         LT = "connect_lost"
-        self.logs("Server: UDP connection lost %s" % str(exc), LT, L.W)
+        self.logs("连接断开: UDP connection lost %s" % str(exc), LT, L.W)
         # exit(4)

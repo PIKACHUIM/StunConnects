@@ -19,6 +19,7 @@ class TimeWatchers(threading.Thread):
                 self.last = time.time()
             time.sleep(1)
 
+
 class PortWatchers(threading.Thread):
     def __init__(self,
                  in_main,
@@ -32,9 +33,10 @@ class PortWatchers(threading.Thread):
         self.last = time.time()
 
     def run(self):
+        self.logs("定期检测: 已经设置%s秒检测一次" % self.time)
         while self.flag:
             if time.time() - self.last >= self.time:
                 self.main.set()
                 self.last = time.time()
-                self.logs("Update: Check URL Changes")
+                self.logs("检测变化: Check URL Changes")
             time.sleep(1)
