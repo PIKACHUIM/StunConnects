@@ -11,6 +11,7 @@ COPY StunServices.py  /app/StunServices.py
 COPY StunDesktops.py  /app/StunDesktops.py
 COPY appSources       /app/appSources/
 COPY subModules       /app/subModules/
+COPY appModules       /app/appModules/
 RUN  pip install -r   /app/pipConfigure.txt
 
 # 设置工作目录
