@@ -8,6 +8,7 @@ COPY StunConnects.ico /app/StunConnects.ico
 COPY pipConfigure.txt /app/pipConfigure.txt
 COPY StunConnects.py  /app/StunConnects.py
 COPY StunServices.py  /app/StunServices.py
+COPY StunDesktops.py  /app/StunDesktops.py
 COPY appSources       /app/appSources/
 COPY subModules       /app/subModules/
 RUN  pip install -r   /app/pipConfigure.txt
@@ -16,4 +17,4 @@ RUN  pip install -r   /app/pipConfigure.txt
 WORKDIR /app
 
 # 启动 Flet 应用
-CMD ["python", "--flag-server", "StunConnects.py"]
+CMD ["python", "StunConnects.py", "--flag-server"]
