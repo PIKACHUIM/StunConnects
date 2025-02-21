@@ -15,7 +15,7 @@ class StunConfigUI:
             value=self.starts_flag,
             label="已禁用",
             on_change=lambda e: self.conf_startup(e),
-            disabled=not self.server_flag
+            disabled=self.server_flag
         )
         self.sys_demo = ft.Switch(
             value=self.server_flag,

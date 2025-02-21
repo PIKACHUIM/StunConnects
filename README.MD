@@ -24,6 +24,11 @@
 ```shell
 docker run -d --network host --name porter-container pikachuim/porter:latest
 ```
+中国用户可以使用
+```shell
+docker run -d --network host --name porter-container docker.opkg.us.kg/pikachuim/porter:latest
+```
+
 
 然后您可以通过`ip:1680`访问您的管理页面，您可能需要放行防火墙
 

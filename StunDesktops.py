@@ -282,7 +282,8 @@ class StunDesktops(ft.Column):
         LT = "conf_startup"
         try:  # 控制启动状态 ===============================================
             self.starts_flag = self.sys_auto.value  # 同步变量 -------------
-            self.sys_auto.label = "已启用" if self.server_flag else "已禁用"
+            self.sys_auto.label = "已启用" if self.starts_flag else "已禁用"
+            self.update()
             if sys.platform.startswith('win32'):  # Windows系统 ------------
                 import winreg
                 # 打开注册表项 ---------------------------------------------
@@ -343,6 +344,8 @@ class StunDesktops(ft.Column):
         LT = "conf_service"
         self.server_flag = self.sys_demo.value
         self.save_configs()
+        self.sys_demo.label = "已启用" if self.server_flag else "已禁用"
+        self.update()
         # 获取路径 ==============================================
         data_path = os.environ.get('APPDATA')
         nssm_path = FindResource.get("appSources/tools.exe")
