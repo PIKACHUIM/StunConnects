@@ -3,7 +3,8 @@ flet
 flet-desktop
 flet-cli
 flet-web
-pystray
 pillow
-pyperclip
+
+#pyperclip
 #pywin32
+#pystray
