@@ -6,8 +6,6 @@ import subprocess
 import sys
 import os
 import time
-import traceback
-
 import flet as ft
 
 from StunServices import StunServices
@@ -288,7 +286,7 @@ class StunDesktops(ft.Column):
                     for tasker_item in self.tasks.controls
                 ]
             }
-            self.print("保存设置: " + json.dumps(conf_data))
+            # self.print("保存设置: " + json.dumps(conf_data))
             conf_file.write(json.dumps(conf_data))
         # 重载服务 =========================================================
         # print("save_configs", self.server_flag, self.server_data)

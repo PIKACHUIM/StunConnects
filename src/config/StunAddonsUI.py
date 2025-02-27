@@ -48,7 +48,7 @@ class StunAddonsUI:
             title=ft.Text("关于 STUN 映射助手"),
             content=ft.Column(controls=[ft.Text(
                 "------------------------------------------\n"
-                "         STUN 映射助手 v0.7 Beta          \n"
+                "         STUN 映射助手 v0.8 Beta          \n"
                 "             GPL-3.0 License              \n"
                 "            作者：Pikachu Ren             \n"
                 "------------------------------------------\n"
@@ -63,7 +63,8 @@ class StunAddonsUI:
                 width=360 if not self.server_flag else 540,
                 height=250 if not self.server_flag else 400,
             )
-            ], alignment=ft.alignment.center), actions=[
+            ], alignment=ft.alignment.center, tight=True,  # 紧密包裹内容
+            ), actions=[
                 ft.TextButton(
                     "OK",
                     on_click=lambda e:

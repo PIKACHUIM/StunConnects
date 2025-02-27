@@ -67,7 +67,7 @@ class StunBottomUI:
                 ft.Row(controls=[
                     ft.Text("服务模式下更改不会立即生效\n"
                             "请点击[应用更改]让更改生效")]),
-            ]),
+            ],tight=True),
             actions=[
                 ft.TextButton(
                     "OK",

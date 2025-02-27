@@ -1,10 +1,8 @@
 import json
 import multiprocessing
 import os
-import sys
 import threading
 import time
-import traceback
 
 from module.LogRecorders import Log, LL as L
 from module.AllForwarder import PortForwards

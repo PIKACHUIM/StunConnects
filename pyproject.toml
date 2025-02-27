@@ -1,28 +1,31 @@
 [project]
 name = "StunConnects"
-version = "0.7 Beta"
+version = "0.8 Beta"
 description = "STUN 映射助手"
 readme = "README.md"
 requires-python = ">=3.9"
-authors = [{
-    name = "Pikachu Ren",
-    email = "pikachuim@foxmail.com"
-    }]
+authors = [
+    { name = "Pikachu Ren", email = "pikachuim@foxmail.com" }
+]
 dependencies = [
     "flet",
     "requests",
-#    "psutil"
+    "httpx"
 ]
 
 [tool.flet]
-app.module = "StunConnects"
 org = "com.pika.stunconnects"
 product = "Stun Connect"
 company = "Pikachu Ren"
 copyright = "Copyright (C) 2025 by Pikachu Ren"
-include = [
-    "./appSources"
-]
+permissions = ["location", "microphone"]
+
 
 [tool.flet.app]
 path = "src"
+
+[tool.flet.android.permission]
+"android.permission.MICROPHONE" = true
+"android.permission.NOTIFICATION" = true
+"android.permission.REQUEST_INSTALL_PACKAGES" = true
+"android.permission.ACCESS_NOTIFICATION_POLICY" = true

@@ -11,7 +11,7 @@ from multiprocessing import Process, Manager
 
 # 主渲染函数 ###################################################################
 def main(page: ft.Page):
-    page.title = "STUN 映射助手 v0.7 Beta"
+    page.title = "STUN 映射助手 v0.8 Beta"
     file_fonts = FindResource.get("assets/fonts.ttf", server_flag)
     page.fonts = {"MapleMono": file_fonts}
     page.theme = ft.Theme(font_family="MapleMono")

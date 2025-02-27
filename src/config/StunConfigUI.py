@@ -84,7 +84,9 @@ class StunConfigUI:
                     alignment=ft.MainAxisAlignment.START,
                 ),
             ],
-                alignment=ft.MainAxisAlignment.START),
+                alignment=ft.MainAxisAlignment.START,
+                tight=True,  # 紧密包裹内容
+            ),
             # 事件按钮 -----------------------------------------
             actions=[
                 ft.TextButton("OK",

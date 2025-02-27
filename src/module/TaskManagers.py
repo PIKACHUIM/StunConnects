@@ -3,9 +3,9 @@ import sys
 import time
 
 import flet as ft
-from src.module.AllForwarder import PortForwards
-from src.module.TaskWatchers import taskWatchers
-from src.module.LogRecorders import LL as L
+from module.AllForwarder import PortForwards
+from module.TaskWatchers import taskWatchers
+from module.LogRecorders import LL as L
 
 
 class TaskManagers(ft.Column):
@@ -270,7 +270,7 @@ class TaskManagers(ft.Column):
             self.print("忽略映射: %s" % (self.url_text_data,), "open_mapping")
             return True
         if self.ports is None and self.map_open.value:
-            self.print("Launch: %s" % self.url_text_data, "open_mapping", L.G)
+            self.print("准备映射: %s" % self.url_text_data, "open_mapping", L.G)
             self.ports = PortForwards(
                 self.map_port_data,
                 "0.0.0.0",

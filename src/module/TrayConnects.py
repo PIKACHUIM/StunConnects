@@ -3,7 +3,7 @@ import pystray
 from PIL import Image
 from pystray import MenuItem
 
-from src.module.FindResource import FindResource
+from module.FindResource import FindResource
 
 
 class TrayConnects():

@@ -52,6 +52,9 @@ class LogLevel(Enum):
         else:
             return "[" + texts[in_level.value] + "]"
 
+    def __str__(self):
+        return LogLevel.str(self)
+
 
 # 枚举类别名 ---------------------------------------------
 LL = LEVEL = level = ll = LOG_LEVEL = log_level = LogLevel
@@ -92,11 +95,10 @@ class Log:
             in_color: [int, LL, None] = None):
         # 输出日志 ======================================
         # 判断类型 --------------------------------------
-        if type(in_level) is LogLevel:
+        c_level = n_level = in_level
+        if type(in_level) is not str:
             c_level = LogLevel.str(in_level)
             n_level = LogLevel.str(in_level, False)
-        else:
-            c_level = n_level = in_level
         # 重写模块 -----------------------------------
         if in_color is None:
             in_color: LogLevel = in_level
@@ -106,9 +108,6 @@ class Log:
             if in_level.value < MIN_OUT_LEVEL.value:
                 return None
         # 准备数据 ------------------------------------------------------------------------
-        # in_master = in_master[:11]
-        # in_module = self.masters[:10]
-        # in_thread = self.config[:10]
         in_master = in_master
         in_module = self.masters
         in_thread = self.modules
@@ -117,7 +116,7 @@ class Log:
         c_str = c_str + "\033[1;37;40m[" + "%-10s" % in_thread.center(10) + "]\033[0m"
         c_str = c_str + "\033[1;37;40m[" + "%-10s" % in_module.center(10) + "]\033[0m"
         c_str = c_str + "\033[1;37;40m[" + "%-8s" % in_master.center(11) + "]\033[0m"
-        n_str = c_str.replace(c_level, n_level)
+        n_str = c_str.replace(c_level, str(n_level))
         n_str = n_str.replace("\033[1;37;40m[", "[").replace("]\033[0m", "]")
         c_str = c_str + c_level
         c_str = c_str + "\033[" + color[int(in_color.value)] + in_texts + "\033[0m"

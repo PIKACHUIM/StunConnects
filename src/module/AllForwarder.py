@@ -2,14 +2,13 @@ import asyncio
 import subprocess
 import sys
 import time
-import requests
 import flet as ft
 import multiprocessing
 
-from src.module.FindResource import FindResource
-from src.module.LogRecorders import Log, LL as L
-from src.module.TimeWatchers import PortWatchers
-from src.module.UdpForwarder import UdpForwarder
+from module.FindResource import FindResource
+from module.LogRecorders import Log, LL as L
+from module.TimeWatchers import PortWatchers
+from module.UdpForwarder import UdpForwarder
 
 
 class PortForwards(multiprocessing.Process):
@@ -83,12 +82,16 @@ class PortForwards(multiprocessing.Process):
     def end(self):
         self.flag = self.flag = False
         for proxy_now in self.proxy_proc:
-            import psutil
-            parent = psutil.Process(self.proxy_proc[proxy_now].pid)
-            # 终止所有子进程
-            for child in parent.children(recursive=True):
-                child.kill()
-            parent.kill()
+            if self.super_type!=ft.PagePlatform.ANDROID:
+                import psutil
+                parent = psutil.Process(
+                    self.proxy_proc[proxy_now].pid)
+                # 终止所有子进程
+                for child in parent.children(recursive=True):
+                    child.kill()
+                parent.kill()
+            else:
+                self.proxy_proc[proxy_now].kill()
         for server_str in (self.server_tcp, self.server_udp):
             if server_str:
                 server_str.close()
@@ -115,18 +118,33 @@ class PortForwards(multiprocessing.Process):
             while True:
                 if retry < 0:
                     sys.exit(4)
-                try:
-                    response = requests.get(
-                        proxy_urls, allow_redirects=False, timeout=30)
-                    break
-                except requests.ConnectTimeout as err:
-                    self.logs("Errors: %s" % str(err), LT, L.W)
-                    time.sleep(1)
-                    retry -= 1
+                http_sys = [ft.PagePlatform.ANDROID, ft.PagePlatform.IOS]
+                if self.super_type in http_sys:
+                    import httpx
+                    with httpx.Client(follow_redirects=False) as client:
+                        response = client.get(proxy_urls)
+                        location = response.text
+                        if response.status_code in (301, 302):
+                            location = response.headers['Location']
+                        break
+                else:
+                    import requests
+                    try:
+                        response = requests.get(
+                            proxy_urls, allow_redirects=False, timeout=30)
+                        location = response.text
+                        if response.status_code in (301, 302):
+                            location = response.headers.get('Location')
+                        break
+                    except requests.ConnectTimeout as err:
+                        self.logs("Errors: %s" % str(err), LT, L.W)
+                        time.sleep(1)
+                        retry -= 1
+                    except requests.RequestException as e:
+                        self.logs(f"请求出错：{e}", LT, L.M)
+                        self.text = "请求出错：" + str(e)
+                        sys.exit(1)
             # 判断状态 ===============================================
-            location = response.text
-            if response.status_code in (301, 302):
-                location = response.headers.get('Location')
             location = location.split("://")[1].split("/")[0]
             local_ap = self.proxy_host + ":" + self.proxy_port
             self.logs("远程端口: %s %s" % (
@@ -137,10 +155,6 @@ class PortForwards(multiprocessing.Process):
             self.proxy_host = location.split(":")[0]
             self.proxy_port = location.split(":")[1]
             return local_ap == location
-        except requests.RequestException as e:
-            self.logs(f"请求出错：{e}", LT, L.M)
-            self.text = "请求出错：" + str(e)
-            sys.exit(1)
         except (IndexError, ValueError, Exception) as e:
             self.logs(f"解析出错：{e}", LT, L.M)
             self.text = "解析出错：" + str(e)
@@ -160,7 +174,7 @@ class PortForwards(multiprocessing.Process):
             tmp = ("socat.%s %s4-LISTEN:%s,reuseaddr,fork %s4:%s:%s" % (
                 socat_arch, listen_str, self.local_port,
                 listen_str, self.proxy_host, self.proxy_port))
-            self.logs("监听命令： " + tmp, LT, L.D)
+            self.logs("监听命令：" + tmp, LT, L.D)
             proc = subprocess.Popen(
                 tmp, shell=True,
                 cwd=FindResource.get("./assets/Socat"))

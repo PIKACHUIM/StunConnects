@@ -2,7 +2,7 @@ import threading
 import time
 import flet as ft
 
-from src.module.AllForwarder import PortForwards
+from module.AllForwarder import PortForwards
 
 
 class taskWatchers(threading.Thread):
