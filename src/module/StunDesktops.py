@@ -8,7 +8,7 @@ import os
 import time
 import flet as ft
 
-from StunServices import StunServices
+from module.StunServices import StunServices
 from config.StunAddonsUI import StunAddonsUI
 from config.StunConfigUI import StunConfigUI
 from config.StunGlobalUI import StunGlobalUI
@@ -82,14 +82,14 @@ class StunDesktops(ft.Column):
     # 事件函数 #############################################################
     # 清空日志 =============================================================
     def kill_log_dlg(self, e=None):
-        log_file = "StunConnects.log"
+        log_file = "../StunConnects.log"
         with open(log_file, "w") as log_file:
             self.page.close(self.log_info)
         self.open_log_dlg()
 
     # 查看日志 =============================================================
     def open_log_dlg(self, e=None):
-        log_file = "StunConnects.log"
+        log_file = "../StunConnects.log"
         if not os.path.exists(log_file):
             return None
         with open(log_file, "r") as log_file:
@@ -233,7 +233,7 @@ class StunDesktops(ft.Column):
 
     # 读取设置 =============================================================
     def load_configs(self):
-        conf_path = "StunConnects.json"
+        conf_path = "../StunConnects.json"
         if not os.path.exists(conf_path):
             return None
         with open(conf_path, "r", encoding="utf-8") as conf_file:
@@ -269,7 +269,7 @@ class StunDesktops(ft.Column):
 
     # 写入设置 =============================================================
     def save_configs(self, e=None):
-        conf_path = "StunConnects.json"
+        conf_path = "../StunConnects.json"
         with open(conf_path, "w", encoding="utf-8") as conf_file:
             conf_data = {
                 "update_time": self.update_time,

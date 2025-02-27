@@ -1,12 +1,10 @@
-import os
 import sys
 import flet as ft
 import multiprocessing
 
-from StunDesktops import StunDesktops
-from StunServices import StunServices
+from module.StunDesktops import StunDesktops
+from module.StunServices import StunServices
 from module.FindResource import FindResource
-from multiprocessing import Process, Manager
 
 
 # 主渲染函数 ###################################################################

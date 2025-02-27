@@ -5,9 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="481d58ea-f504-4af3-9b07-e593e59a52b8" name="Changes" comment="StunConnects-v0.8b：&#10;1、修复了若干问题&#10;2、修改了代码目录&#10;3、修复了requests安卓端的问题">
-      <change beforePath="$PROJECT_DIR$/dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/dockerfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pyproject.toml" beforeDir="false" afterPath="$PROJECT_DIR$/pyproject.toml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/StunConnects.spec" beforeDir="false" afterPath="$PROJECT_DIR$/src/StunConnects.spec" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/config/StunAddonsUI.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/config/StunAddonsUI.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/StunDesktops.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/module/StunDesktops.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/StunServices.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/module/StunServices.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -37,18 +40,18 @@
     <option name="sortByType" value="true" />
     <option name="sortKey" value="BY_TYPE" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Python.StunConnects.executor": "Run",
-    "Python.main.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "main",
-    "last_opened_file_path": "D:/Codes/StunConnects/src",
-    "settings.editor.selected.configurable": "PyConsoleConfigurable.Python Console",
-    "settings.editor.splitter.proportion": "0.28340584"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Python.StunConnects.executor&quot;: &quot;Run&quot;,
+    &quot;Python.main.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/Codes/StunConnects/src&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;PyConsoleConfigurable.Python Console&quot;,
+    &quot;settings.editor.splitter.proportion&quot;: &quot;0.28340584&quot;
   }
-}]]></component>
+}</component>
   <component name="PyConsoleOptionsProvider">
     <option name="myPythonConsoleState">
       <console-settings custom-start-script="import sys; print('Python %s on %s' % (sys.version, sys.platform))&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;chcp 65001" module-name="StunConnects" is-module-sdk="true">
@@ -63,6 +66,7 @@
       <recent name="D:\Codes\StunConnects\appSources\Socat" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\Codes\StunConnects\src\module" />
       <recent name="D:\Codes\StunConnects\src" />
     </key>
   </component>
@@ -80,7 +84,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/main.py" />
+      <option name="SCRIPT_NAME" value="D:\Codes\StunConnects\src\main.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -151,7 +155,15 @@
       <option name="project" value="LOCAL" />
       <updated>1740646299988</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="StunConnects-v0.8b：&#10;1、修复了若干问题&#10;2、修改了代码目录&#10;3、修复了requests安卓端的问题">
+      <option name="closed" value="true" />
+      <created>1740646458475</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1740646458475</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">

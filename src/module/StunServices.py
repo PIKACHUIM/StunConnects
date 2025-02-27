@@ -45,7 +45,7 @@ class StunServices(threading.Thread):
 
     # 载入数据 =========================================================
     def load(self):
-        conf_path = "StunConnects.json"
+        conf_path = "../StunConnects.json"
         if not os.path.exists(conf_path):
             return False
         with open(conf_path, "r", encoding="utf-8") as conf_file:

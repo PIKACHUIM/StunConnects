@@ -20,7 +20,6 @@ company = "Pikachu Ren"
 copyright = "Copyright (C) 2025 by Pikachu Ren"
 permissions = ["location", "microphone"]
 
-
 [tool.flet.app]
 path = "src"
 
