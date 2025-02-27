@@ -7,15 +7,16 @@ RUN pip install flet
 COPY src/StunConnects.ico /app/StunConnects.ico
 COPY src/pipConfigure.txt /app/pipConfigure.txt
 COPY src/StunConnects.py  /app/StunConnects.py
-COPY src/StunServices.py  /app/StunServices.py
+
 COPY src/StunDesktops.py  /app/StunDesktops.py
 COPY src/assets           /app/assets/
 COPY src/config           /app/config/
 COPY src/module           /app/module/
+COPY src/main.py          /app/main.py
 RUN  pip install -r       /app/pipConfigure.txt
 
 # 设置工作目录
 WORKDIR /app
 
 # 启动 Flet 应用
-CMD ["python", "StunConnects.py", "--flag-server"]
+CMD ["python", "main.py", "--flag-server"]
