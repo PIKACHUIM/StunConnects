@@ -2,11 +2,11 @@
 
 
 a = Analysis(
-    ['StunConnects.py'],
+    ['main.py'],
     pathex=[],
     binaries=[],
     datas=[
-    ("./appSources","appSources"),
+    ("./assets","assets"),
     ],
     hiddenimports=[],
     hookspath=[],

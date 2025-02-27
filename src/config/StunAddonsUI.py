@@ -1,6 +1,6 @@
 import flet as ft
 
-from src.module.FindResource import FindResource
+from module.FindResource import FindResource
 
 
 class StunAddonsUI:
