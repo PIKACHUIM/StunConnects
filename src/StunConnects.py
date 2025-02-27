@@ -5,14 +5,14 @@ import multiprocessing
 
 from StunDesktops import StunDesktops
 from StunServices import StunServices
-from subModules.FindResource import FindResource
+from module.FindResource import FindResource
 from multiprocessing import Process, Manager
 
 
 # 主渲染函数 ###################################################################
 def main(page: ft.Page):
-    page.title = "STUN 映射助手 v0.5 Beta"
-    file_fonts = FindResource.get("appSources/fonts.ttf", server_flag)
+    page.title = "STUN 映射助手 v0.7 Beta"
+    file_fonts = FindResource.get("assets/fonts.ttf", server_flag)
     page.fonts = {"MapleMono": file_fonts}
     page.theme = ft.Theme(font_family="MapleMono")
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
@@ -62,7 +62,7 @@ def main(page: ft.Page):
 
     # 设置托盘 ============================================
     if sys.platform.startswith('win32'):
-        from subModules.TrayConnects import TrayConnects
+        from module.TrayConnects import TrayConnects
         tray = TrayConnects(
             full_windows,
             exit_windows,
@@ -72,6 +72,7 @@ def main(page: ft.Page):
         tray.run()
     # 启动页面 ============================================
     page.add(view)
+    view.update()
     page.window.on_event = deal_windows
     page.update()
 

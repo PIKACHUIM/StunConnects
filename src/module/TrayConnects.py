@@ -3,7 +3,7 @@ import pystray
 from PIL import Image
 from pystray import MenuItem
 
-from subModules.FindResource import FindResource
+from src.module.FindResource import FindResource
 
 
 class TrayConnects():
@@ -25,7 +25,7 @@ class TrayConnects():
             MenuItem('打开', self.set),
             MenuItem('退出', self.end)
         )
-        self.icon = Image.open(FindResource.get("appSources/icons.png"))
+        self.icon = Image.open(FindResource.get("assets/icons.png"))
         self.tray = pystray.Icon("STUN 映射助手", self.icon,
                                  "STUN 映射助手", self.menu)
 

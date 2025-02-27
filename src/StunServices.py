@@ -6,8 +6,8 @@ import threading
 import time
 import traceback
 
-from subModules.LogRecorders import Log, LL as L
-from subModules.AllForwarder import PortForwards
+from module.LogRecorders import Log, LL as L
+from module.AllForwarder import PortForwards
 
 
 class StunServices(threading.Thread):

@@ -1,6 +1,6 @@
 import flet as ft
 
-from subModules.FindResource import FindResource
+from src.module.FindResource import FindResource
 
 
 class StunAddonsUI:
@@ -48,7 +48,7 @@ class StunAddonsUI:
             title=ft.Text("关于 STUN 映射助手"),
             content=ft.Column(controls=[ft.Text(
                 "------------------------------------------\n"
-                "         STUN 映射助手 v0.5 Beta          \n"
+                "         STUN 映射助手 v0.7 Beta          \n"
                 "             GPL-3.0 License              \n"
                 "            作者：Pikachu Ren             \n"
                 "------------------------------------------\n"
@@ -58,7 +58,7 @@ class StunAddonsUI:
                 "\n"
                 "这是免费的软件，但你可以打赏作者一瓶番茄酱\n"
             ), ft.Image(
-                src=FindResource.get("appSources/paids.jpg",
+                src=FindResource.get("assets/paids.jpg",
                                      self.server_flag),
                 width=360 if not self.server_flag else 540,
                 height=250 if not self.server_flag else 400,

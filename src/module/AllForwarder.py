@@ -1,5 +1,4 @@
 import asyncio
-import os
 import subprocess
 import sys
 import time
@@ -7,9 +6,10 @@ import requests
 import flet as ft
 import multiprocessing
 
-from subModules.LogRecorders import Log, LL as L
-from subModules.TimeWatchers import PortWatchers
-from subModules.UdpForwarder import UdpForwarder
+from src.module.FindResource import FindResource
+from src.module.LogRecorders import Log, LL as L
+from src.module.TimeWatchers import PortWatchers
+from src.module.UdpForwarder import UdpForwarder
 
 
 class PortForwards(multiprocessing.Process):
@@ -162,7 +162,8 @@ class PortForwards(multiprocessing.Process):
                 listen_str, self.proxy_host, self.proxy_port))
             self.logs("监听命令： " + tmp, LT, L.D)
             proc = subprocess.Popen(
-                tmp, shell=True, cwd="./appSources/Socat")
+                tmp, shell=True,
+                cwd=FindResource.get("./assets/Socat"))
             self.proxy_proc[listen_str] = proc
         while self.pkill_flag is None or not self.pkill_flag.is_set():
             time.sleep(0.1)

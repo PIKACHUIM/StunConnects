@@ -1,10 +1,6 @@
-import os
 import sys
-import webbrowser
 
 import flet as ft
-
-from subModules.FindResource import FindResource
 
 
 class StunConfigUI:
@@ -21,7 +17,6 @@ class StunConfigUI:
             value=self.socats_flag,
             label="已禁用",
             on_change=lambda e: self.config_socat(e),
-            # disabled=self.server_flag
         )
         self.sys_demo = ft.Switch(
             value=self.server_flag,

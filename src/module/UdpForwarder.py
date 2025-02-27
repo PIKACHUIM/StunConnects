@@ -1,4 +1,4 @@
-from subModules.LogRecorders import Log, LL as L
+from src.module.LogRecorders import LL as L
 
 
 # UDP 数据转发处理器 #################################################################

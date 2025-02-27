@@ -3,8 +3,6 @@ import webbrowser
 
 import flet as ft
 
-from subModules.FindResource import FindResource
-
 
 class StunBottomUI:
     @staticmethod

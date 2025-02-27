@@ -108,7 +108,7 @@ class Log:
         # 准备数据 ------------------------------------------------------------------------
         # in_master = in_master[:11]
         # in_module = self.masters[:10]
-        # in_thread = self.modules[:10]
+        # in_thread = self.config[:10]
         in_master = in_master
         in_module = self.masters
         in_thread = self.modules

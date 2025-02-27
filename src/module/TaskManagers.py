@@ -1,13 +1,11 @@
 import multiprocessing
-import os
 import sys
 import time
-import traceback
 
 import flet as ft
-from subModules.AllForwarder import PortForwards
-from subModules.TaskWatchers import taskWatchers
-from subModules.LogRecorders import Log, LL as L
+from src.module.AllForwarder import PortForwards
+from src.module.TaskWatchers import taskWatchers
+from src.module.LogRecorders import LL as L
 
 
 class TaskManagers(ft.Column):
@@ -245,7 +243,7 @@ class TaskManagers(ft.Column):
         # 更新界面 =========================================
         if action:
             self.item_checked()
-            self.on_change(None)
+            self.on_change(None, True)
             self.update()
 
     # 操作 ####################################################################
@@ -316,4 +314,4 @@ class TaskManagers(ft.Column):
     # 选中映射 ================================================================
     def item_clicked(self, e):
         self.check = self.map_name.value
-        self.on_change(e)
+        self.on_change(e, save=False)

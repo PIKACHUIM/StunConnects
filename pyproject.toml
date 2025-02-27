@@ -11,7 +11,7 @@ authors = [{
 dependencies = [
     "flet",
     "requests",
-    "psutil"
+#    "psutil"
 ]
 
 [tool.flet]
@@ -23,3 +23,6 @@ copyright = "Copyright (C) 2025 by Pikachu Ren"
 include = [
     "./appSources"
 ]
+
+[tool.flet.app]
+path = "src"

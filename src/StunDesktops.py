@@ -11,13 +11,13 @@ import traceback
 import flet as ft
 
 from StunServices import StunServices
-from appModules.StunAddonsUI import StunAddonsUI
-from appModules.StunConfigUI import StunConfigUI
-from appModules.StunGlobalUI import StunGlobalUI
-from subModules.FindResource import FindResource
-from appModules.StunBottomUI import StunBottomUI
-from subModules.TaskManagers import TaskManagers
-from subModules.LogRecorders import Log, LL as L
+from config.StunAddonsUI import StunAddonsUI
+from config.StunConfigUI import StunConfigUI
+from config.StunGlobalUI import StunGlobalUI
+from module.FindResource import FindResource
+from config.StunBottomUI import StunBottomUI
+from module.TaskManagers import TaskManagers
+from module.LogRecorders import Log, LL as L
 
 
 class StunDesktops(ft.Column):
@@ -174,9 +174,10 @@ class StunDesktops(ft.Column):
                 task.stop_mapping()
 
     # 修改项目 =============================================================
-    def task_changed(self, e=None):
+    def task_changed(self, e=None, save=False):
         if self.create_flag:
-            self.save_configs()
+            if save:
+                self.save_configs()
             self.update()
 
     # 删除项目 =============================================================
@@ -241,12 +242,19 @@ class StunDesktops(ft.Column):
             conf_data = json.loads(conf_file.read())
             if "update_time" in conf_data:
                 self.update_time = conf_data["update_time"]
+                self.set_time.value = conf_data["update_time"]
             if not self.server_flag and "server_flag" in conf_data:
                 self.server_flag = conf_data["server_flag"]
+                self.sys_demo.value = conf_data["server_flag"]
+                self.sys_demo.label = "已启用" if self.socats_flag else "已禁用"
             if "starts_flag" in conf_data:
                 self.starts_flag = conf_data["starts_flag"]
+                self.sys_auto.value = conf_data["starts_flag"]
+                self.sys_auto.label = "已启用" if self.socats_flag else "已禁用"
             if "socats_flag" in conf_data:
                 self.socats_flag = conf_data["socats_flag"]
+                self.ext_tool.value = conf_data["socats_flag"]
+                self.ext_tool.label = "已启用" if self.socats_flag else "已禁用"
             if "tasker_list" in conf_data:
                 for tasker_list in conf_data["tasker_list"]:
                     task = TaskManagers(
@@ -291,15 +299,17 @@ class StunDesktops(ft.Column):
     # 自动启动 =============================================================
     def config_socat(self, e):
         self.socats_flag = self.ext_tool.value
+        self.ext_tool.label = "已启用" if self.socats_flag else "已禁用"
         self.ext_hint = ft.AlertDialog(
             title=ft.Text("提示"),
             content=ft.Text("切换Socat将会在重启后生效"),
             actions=[
                 ft.TextButton(
                     "OK",
-                    on_click=lambda e: self.page.close(
-                        self.ext_hint))])
+                    on_click=lambda e: self.page.close(self.ext_hint))])
         self.page.open(self.ext_hint)
+        self.save_configs()
+        self.update()
 
     # 自动启动 =============================================================
     def conf_startup(self, e, app_name="Stun Connect"):
@@ -308,6 +318,8 @@ class StunDesktops(ft.Column):
             self.starts_flag = self.sys_auto.value  # 同步变量 -------------
             self.sys_auto.label = "已启用" if self.starts_flag else "已禁用"
             self.update()
+            self.page.close(self.dlg_conf)
+            self.page.open(self.dlg_conf)
             if sys.platform.startswith('win32'):  # Windows系统 ------------
                 import winreg
                 # 打开注册表项 ---------------------------------------------
@@ -356,7 +368,7 @@ class StunDesktops(ft.Column):
         LT = "nssm_control"
         self.print("服务控制: " + action, LT, L.G)
         if nssm_path is None:
-            nssm_path = FindResource.get("appSources/tools.exe")
+            nssm_path = FindResource.get("assets/tools.exe")
         nssm_data = subprocess.run(nssm_path + " " + action,
                                    shell=True, capture_output=True)
         nssm_text = (nssm_data.stdout + nssm_data.stderr).decode("utf-16")
@@ -367,12 +379,14 @@ class StunDesktops(ft.Column):
     def conf_service(self, e=None):
         LT = "conf_service"
         self.server_flag = self.sys_demo.value
-        self.save_configs()
         self.sys_demo.label = "已启用" if self.server_flag else "已禁用"
+        self.save_configs()
         self.update()
+        self.page.close(self.dlg_conf)
+        self.page.open(self.dlg_conf)
         # 获取路径 ==============================================
         data_path = os.environ.get('APPDATA')
-        nssm_path = FindResource.get("appSources/tools.exe")
+        nssm_path = FindResource.get("assets/tools.exe")
         if self.server_flag:  # 设置服务 ========================
             try:
                 shutil.copy(nssm_path, data_path)

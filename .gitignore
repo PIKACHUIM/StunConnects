@@ -168,5 +168,5 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
-StunConnects.json
+src/StunConnects.json
 *.json
