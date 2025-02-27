@@ -33,9 +33,11 @@ class taskWatchers(threading.Thread):
                     self.main.ports = PortForwards(
                         self.main.map_port_data,
                         "0.0.0.0",
+                        super_type=self.main.super_type,
                         proxy_type=self.main.map_type_data,
                         proxy_urls=self.main.url_text_data,
-                        in_dog_var=self.main.super.update_time,
+                        socat_flag=self.main.socats_flag,
+                        in_dog_var=self.main.time,
                         server_tip="StunConnects"
                     )
                     self.main.ports.start()

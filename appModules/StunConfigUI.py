@@ -17,6 +17,12 @@ class StunConfigUI:
             on_change=lambda e: self.conf_startup(e),
             disabled=self.server_flag
         )
+        self.ext_tool = ft.Switch(
+            value=self.socats_flag,
+            label="已禁用",
+            on_change=lambda e: self.config_socat(e),
+            # disabled=self.server_flag
+        )
         self.sys_demo = ft.Switch(
             value=self.server_flag,
             label="已禁用",
@@ -76,6 +82,12 @@ class StunConfigUI:
                     sys.platform.startswith('win32') and \
                     not self.server_flag else \
                     ft.Container(),
+                # Socat -------------------------------------
+                ft.Row(controls=[
+                    ft.Text("外部代理模式："),
+                    self.ext_tool],
+                    alignment=ft.MainAxisAlignment.START,
+                ),
             ],
                 alignment=ft.MainAxisAlignment.START),
             # 事件按钮 -----------------------------------------

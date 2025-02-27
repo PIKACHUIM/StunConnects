@@ -26,6 +26,7 @@ class StunGlobalUI:
                 controls=[
                     self.map_name,
                     self.url_text,
+                    self.url_pass,
                     self.map_port,
                     self.map_type,
                     ft.FloatingActionButton(

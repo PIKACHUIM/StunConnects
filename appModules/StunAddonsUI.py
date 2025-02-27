@@ -10,15 +10,18 @@ class StunAddonsUI:
         # 备注名称 --------------------------------------------
         self.map_name = ft.TextField(
             hint_text="备注名称",
-            on_submit=self.task_created,
             width=110,
             label="备注名称")
         # 跳转链接 --------------------------------------------
         self.url_text = ft.TextField(
             hint_text="https://1web.us.kg/s/XXXXXXXX",
-            on_submit=self.task_created,
             expand=True,
             label="跳转链接")
+        # 跳转密码 --------------------------------------------
+        self.url_pass = ft.TextField(
+            hint_text="",
+            width=110,
+            label="访问密码")
         # 需要名称 --------------------------------------------
         self.dlg_name = ft.AlertDialog(
             title=ft.Text("错误"),

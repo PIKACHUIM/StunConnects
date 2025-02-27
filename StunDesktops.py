@@ -26,6 +26,7 @@ class StunDesktops(ft.Column):
                  data: StunServices = None):
         super().__init__()
         # 全局设置 =========================
+
         self.count = None  # 选中任务计数int
         self.hosts = None  # 本地主机名Hosts
         self.width = 720  # 全局应用组件宽度
@@ -39,6 +40,7 @@ class StunDesktops(ft.Column):
         self.update_time = 600  # 自更新时间
         self.starts_flag = False  # 是否自启
         self.create_flag = False  # 是否完成
+        self.socats_flag = False  # 外部代理
         self.server_data = data  # ServerAPI
         self.server_flag = server_flag  # CS
         self.get_local_ip()  # 获取本地Hosts
@@ -69,6 +71,9 @@ class StunDesktops(ft.Column):
         self.map_type = None
         self.log_text = None
         self.log_info = None
+        self.url_pass = None
+        self.ext_tool = None
+        self.ext_hint = None
         # 设置控件 =========================
         StunAddonsUI.set_ui(self)  # 添加GUI
         StunConfigUI.set_ui(self)  # 配置GUI
@@ -127,6 +132,8 @@ class StunDesktops(ft.Column):
         # 判定类型 ---------------------------------------------------------
         if not self.map_type.value:
             self.map_type.value = "All"
+        if self.url_pass.value:
+            self.url_text.value += "?guests=" + self.url_pass.value
         # 执行创建 ---------------------------------------------------------
         if self.url_text.value and self.map_name.value:
             task = TaskManagers(
@@ -137,6 +144,7 @@ class StunDesktops(ft.Column):
             self.map_port.value = ""
             self.map_name.value = ""
             self.url_text.value = ""
+            self.url_pass.value = ""
             self.task_changed(None)
             self.update()
 
@@ -237,6 +245,8 @@ class StunDesktops(ft.Column):
                 self.server_flag = conf_data["server_flag"]
             if "starts_flag" in conf_data:
                 self.starts_flag = conf_data["starts_flag"]
+            if "socats_flag" in conf_data:
+                self.socats_flag = conf_data["socats_flag"]
             if "tasker_list" in conf_data:
                 for tasker_list in conf_data["tasker_list"]:
                     task = TaskManagers(
@@ -259,6 +269,7 @@ class StunDesktops(ft.Column):
                 "update_time": self.update_time,
                 "server_flag": self.server_flag,
                 "starts_flag": self.starts_flag,
+                "socats_flag": self.socats_flag,
                 "tasker_list": [{
                     "url_text": tasker_item.url_text_data,
                     "map_name": tasker_item.map_name_data,
@@ -276,6 +287,19 @@ class StunDesktops(ft.Column):
         # traceback.print_stack(sys._getframe())
         if self.server_flag and self.server_data:
             self.server_data.load()
+
+    # 自动启动 =============================================================
+    def config_socat(self, e):
+        self.socats_flag = self.ext_tool.value
+        self.ext_hint = ft.AlertDialog(
+            title=ft.Text("提示"),
+            content=ft.Text("切换Socat将会在重启后生效"),
+            actions=[
+                ft.TextButton(
+                    "OK",
+                    on_click=lambda e: self.page.close(
+                        self.ext_hint))])
+        self.page.open(self.ext_hint)
 
     # 自动启动 =============================================================
     def conf_startup(self, e, app_name="Stun Connect"):

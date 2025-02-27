@@ -1,4 +1,5 @@
 import json
+import multiprocessing
 import os
 import sys
 import threading
@@ -14,8 +15,10 @@ class StunServices(threading.Thread):
         super().__init__()
         # 创建数据 ===================
         self.map_list = {}  # 映射列表
+        self.evt_list = {}  # 映射列表
         self.put_time = time.time()
         self.set_time = set_time
+        self.cat_flag = False
         self.api_logs = Log(
             "StunConnects",
             "StunConnects",
@@ -51,6 +54,8 @@ class StunServices(threading.Thread):
             conf_data = json.loads(conf_file.read())
             if "update_time" in conf_data:
                 self.set_time = conf_data["update_time"]
+            if "socats_flag" in conf_data:
+                self.cat_flag = conf_data["socats_flag"]
             if "tasker_list" in conf_data:
                 for task_now in conf_data["tasker_list"]:
                     # print(task_now)
@@ -71,6 +76,8 @@ class StunServices(threading.Thread):
             # 停止并删除当前
             if not task_dict['map_flag']:
                 self.api_logs("停止任务: " + url_text)
+                self.evt_list[url_text].set()
+                time.sleep(3)
                 old_task.kill()
                 self.map_list.pop(url_text)
                 return False
@@ -96,13 +103,16 @@ class StunServices(threading.Thread):
         url_text = task_dict['url_text']
         if not task_dict['map_flag']:
             return False
+        self.evt_list[url_text] = multiprocessing.Event()
         map_task = PortForwards(
             task_dict['map_port'],
             "0.0.0.0",
             proxy_type=task_dict['map_type'],
             proxy_urls=url_text,
+            pkill_flag=self.evt_list[url_text],
+            socat_flag=self.cat_flag,
             server_tip="StunConnects",
-            in_dog_var = self.set_time
+            in_dog_var=self.set_time
         )
         self.map_list[url_text] = map_task
         map_task.start()

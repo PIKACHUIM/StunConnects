@@ -36,7 +36,7 @@ class PortWatchers(threading.Thread):
         self.logs("定期检测: 已经设置%s秒检测一次" % self.time)
         while self.flag:
             if time.time() - self.last >= self.time:
-                self.main.set()
+                self.main.reload()
                 self.last = time.time()
                 self.logs("检测变化: Check URL Changes")
             time.sleep(1)

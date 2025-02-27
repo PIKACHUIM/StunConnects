@@ -1,5 +1,7 @@
+import multiprocessing
 import os
 import sys
+import time
 import traceback
 
 import flet as ft
@@ -26,6 +28,7 @@ class TaskManagers(ft.Column):
         self.check = False
         self.super = in_super
         self.print = in_super.print
+        self.event = multiprocessing.Event()
         # 事件处理 ==================================
         self.on_change = self.super.task_changed
         self.on_delete = self.super.task_deleted
@@ -275,9 +278,14 @@ class TaskManagers(ft.Column):
                 "0.0.0.0",
                 proxy_type=self.map_type_data,
                 proxy_urls=self.url_text_data,
+                super_type=self.super.pages.platform,
+                pkill_flag=self.event,
+                socat_flag=self.super.socats_flag,
                 in_dog_var=self.super.update_time,
                 server_tip="StunConnects",
+
             )
+            self.event.clear()
             self.ports.start()
             self.watch = taskWatchers(self)
             self.watch.start()
@@ -289,11 +297,13 @@ class TaskManagers(ft.Column):
             if self.watch is not None:
                 self.watch.flag = False
                 self.watch = None
-            self.print("Killed: %s %s:%s" % (
+            self.print("停止映射: %s %s:%s" % (
                 self.map_type_data,
                 self.ports.local_host,
                 self.ports.local_port
             ), "stop_mapping", L.W)
+            self.event.set()
+            time.sleep(2)
             self.ports.kill()
             self.ports = None
 

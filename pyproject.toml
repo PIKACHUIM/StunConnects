@@ -1,6 +1,6 @@
 [project]
 name = "StunConnects"
-version = "0.5 Beta"
+version = "0.7 Beta"
 description = "STUN 映射助手"
 readme = "README.md"
 requires-python = ">=3.9"
@@ -11,7 +11,7 @@ authors = [{
 dependencies = [
     "flet",
     "requests",
-#    "pyperclip"
+    "psutil"
 ]
 
 [tool.flet]
@@ -20,3 +20,6 @@ org = "com.pika.stunconnects"
 product = "Stun Connect"
 company = "Pikachu Ren"
 copyright = "Copyright (C) 2025 by Pikachu Ren"
+include = [
+    "./appSources"
+]

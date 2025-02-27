@@ -4,6 +4,7 @@ flet-desktop
 flet-cli
 flet-web
 pillow
+psutil
 
 #pyperclip
 #pywin32
