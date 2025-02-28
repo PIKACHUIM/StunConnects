@@ -70,7 +70,7 @@ class TaskManagers(ft.Column):
         )
         # 代理类型 ===================================
         self.map_type = ft.Dropdown(
-            width=60,
+            width=80,
             value=map_type,
             options=[
                 ft.dropdown.Option("All"),
@@ -185,8 +185,7 @@ class TaskManagers(ft.Column):
             self.map_kill.read_only = False
             self.url_text.label = "跳转链接"
             self.map_port.label = "本地端口"
-            self.map_type.label = "映射类型"
-            self.map_type.label = "映射类型"
+            self.map_type.label = "类型"
             # 修改样试 ------------------------------------
             self.url_text.border = ft.InputBorder.UNDERLINE
             self.map_port.border = ft.InputBorder.UNDERLINE

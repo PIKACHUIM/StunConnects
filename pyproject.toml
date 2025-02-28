@@ -18,13 +18,13 @@ org = "com.pika.stunconnects"
 product = "Stun Connect"
 company = "Pikachu Ren"
 copyright = "Copyright (C) 2025 by Pikachu Ren"
-permissions = ["location", "microphone"]
+#permissions = ["location", "microphone"]
 
 [tool.flet.app]
 path = "src"
 
-[tool.flet.android.permission]
-"android.permission.MICROPHONE" = true
-"android.permission.NOTIFICATION" = true
-"android.permission.REQUEST_INSTALL_PACKAGES" = true
-"android.permission.ACCESS_NOTIFICATION_POLICY" = true
+#[tool.flet.android.permission]
+#"android.permission.MICROPHONE" = true
+#"android.permission.NOTIFICATION" = true
+#"android.permission.REQUEST_INSTALL_PACKAGES" = true
+#"android.permission.ACCESS_NOTIFICATION_POLICY" = true
