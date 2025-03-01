@@ -123,7 +123,9 @@ StunConnects.exe --flag-server
 
 
 ### 申请链接
-申请地址：https://1web.us.kg/，『目标地址』需要随便填写一个
+申请地址：https://1web.us.kg/
+
+目标地址』需要随便填写一个
 ![QQ20250228-112157](img/QQ20250228-112157.png)
 
 
